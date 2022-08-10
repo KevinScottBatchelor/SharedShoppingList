@@ -1,7 +1,13 @@
-BEGIN TRANSACTION;
 
-DROP TABLE IF EXISTS accounts, items, lists, groups, account_groups CASCADE;
+DROP TABLE IF EXISTS users, accounts, items, lists, groups, account_groups, lists_in_group, invite_status CASCADE;
 
+CREATE TABLE users (
+	user_id SERIAL,
+	username varchar(50) NOT NULL UNIQUE,
+	password_hash varchar(200) NOT NULL,
+	role varchar(50) NOT NULL,
+	CONSTRAINT PK_user PRIMARY KEY (user_id)
+);
 
 CREATE TABLE accounts (
         account_id SERIAL,
@@ -14,7 +20,7 @@ CREATE TABLE accounts (
 
 CREATE TABLE lists (
         list_id SERIAL,
-        list_name varchar(30) NOT NULL,
+        list_name varchar(30) NOT NULL UNIQUE,
         account_id int NOT NULL,
         claimed_by varchar(50), 
         
@@ -37,7 +43,7 @@ CREATE TABLE items (
 
 CREATE TABLE groups (
         group_id SERIAL,
-        group_name varchar(30) NOT NULL,
+        group_name varchar(30) NOT NULL UNIQUE,
             
         CONSTRAINT PK_group_id PRIMARY KEY (group_id)         
 );
@@ -63,6 +69,21 @@ CREATE TABLE account_groups (
          
 );
 
+CREATE TABLE invite_status (
+        invite_id SERIAL,
+        invite_code varchar(6) NOT NULL,
+        is_accepted boolean DEFAULT false,
+        invited_user int,
+        
+        CONSTRAINT PK_invite_id PRIMARY KEY (invite_id),
+        CONSTRAINT FK_invite_user FOREIGN KEY (invited_user) REFERENCES accounts(account_id)
+        
+        
+);
+
+INSERT INTO users (username,password_hash,role) VALUES ('user','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_USER');
+INSERT INTO users (username,password_hash,role) VALUES ('admin','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_ADMIN');
+
 INSERT INTO accounts(user_id)
 VALUES (1);
 
@@ -71,6 +92,9 @@ VALUES (2);
 
 INSERT INTO lists(list_name, account_id, claimed_by)
 VALUES ('Max''s shopping list', 2, 'admin');
+
+INSERT INTO lists(list_name, account_id)
+VALUES ('Jay''s shopping list', 5);
 
 INSERT INTO lists(list_name, account_id)
 VALUES ('Kevin''s shopping list', 1);
@@ -99,4 +123,18 @@ VALUES (1,1, current_date);
 INSERT INTO account_groups(group_id, member_of_group_id, joined_date)
 VALUES (2,2, current_date);
 
-COMMIT TRANSACTION; 
+INSERT INTO invite_status(invite_code, invited_user)
+VALUES ('j2i39', 2);
+
+INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
+VALUES (1, 'Orange', 10, current_date, 'jay@gmail.com');
+
+INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
+VALUES (1, 'Strawberry', 10, current_date, 'jay@gmail.com');
+
+INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
+VALUES (1, 'Watermelon', 10, current_date, 'jay@gmail.com');
+
+
+
+

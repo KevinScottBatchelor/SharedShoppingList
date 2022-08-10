@@ -101,3 +101,11 @@ public class User {
               '}';
    }
 }
+
+//
+//{
+//        "username": "jay",
+//        "password": "jay",
+//        "confirmPassword": "jay",
+//        "role": "ROLE_admin"
+//        }

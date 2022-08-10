@@ -3,6 +3,8 @@ package com.techelevator.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.techelevator.model.UserNotFoundException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,7 +31,7 @@ public class JdbcUserDao implements UserDao {
 
         int userId;
         try {
-            userId = jdbcTemplate.queryForObject("select user_id from users where username = ?", int.class, username);
+            userId = jdbcTemplate.queryForObject("select user_id from users where username ILIKE ?;", Integer.class, username);
         } catch (EmptyResultDataAccessException e) {
             throw new UsernameNotFoundException("User " + username + " was not found.");
         }
@@ -76,11 +78,25 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean create(String username, String password, String role) {
-        String insertUserSql = "insert into users (username,password_hash,role) values (?,?,?)";
+
+        //create user
+        String insertUserSql = "insert into users (username,password_hash,role) values (?,?,?) RETURNING user_id";
         String password_hash = new BCryptPasswordEncoder().encode(password);
         String ssRole = role.toUpperCase().startsWith("ROLE_") ? role.toUpperCase() : "ROLE_" + role.toUpperCase();
-
-        return jdbcTemplate.update(insertUserSql, username, password_hash, ssRole) == 1;
+        String regex = "^(?=.*[a-z])(?=."
+                + "*[A-Z])(?=.*\\d)"
+                + "(?=.*[-+_!@#$%^&*., ?]).+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(password);
+        Integer newUserId;
+//        if(username.contains("@") && password.length() >= 8 && m.matches()) {
+            newUserId = jdbcTemplate.queryForObject(insertUserSql, Integer.class, username, password_hash, ssRole);
+            insertUserSql = "INSERT INTO accounts (user_id) VALUES (?);";
+            jdbcTemplate.update(insertUserSql, newUserId);
+//        } else {
+//            return false;
+//        }
+        return true;
     }
 
     private User mapRowToUser(SqlRowSet rs) {

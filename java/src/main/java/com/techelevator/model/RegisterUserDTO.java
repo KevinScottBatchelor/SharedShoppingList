@@ -1,12 +1,22 @@
 package com.techelevator.model;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class RegisterUserDTO {
 
     @NotEmpty
+
     private String username;
     @NotEmpty
+    @Size(min = 8, message = "Password must contain one capital letter, one lower, one number, " +
+            "special character minimum of 8 characters")
+//    @Pattern(regexp = )
+//    (?=.*[a-z])        // use positive look ahead to see if at least one lower case letter exists
+//    (?=.*[A-Z])        // use positive look ahead to see if at least one upper case letter exists
+//    (?=.*\d)           // use positive look ahead to see if at least one digit exists
+//    (?=.*\W)           // use positive look ahead to see if at least one non-word character exists
     private String password;
     @NotEmpty
     private String confirmPassword;
