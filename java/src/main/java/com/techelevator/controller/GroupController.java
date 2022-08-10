@@ -2,8 +2,10 @@ package com.techelevator.controller;
 
 import com.techelevator.dao.AccountDao;
 import com.techelevator.dao.GroupDao;
+import com.techelevator.dao.InviteDao;
 import com.techelevator.model.Account;
 import com.techelevator.model.Group;
+import com.techelevator.model.Invite;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +21,14 @@ public class GroupController {
 
     private final GroupDao groupDao;
     private final AccountDao accountDao;
-    private int inviteCode;
+    private final InviteDao inviteDao;
 
 
 
-    public GroupController(GroupDao groupDao, AccountDao accountDao) {
+    public GroupController(GroupDao groupDao, AccountDao accountDao, InviteDao inviteDao) {
         this.groupDao = groupDao;
         this.accountDao = accountDao;
-
+        this.inviteDao = inviteDao;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,12 +45,7 @@ public class GroupController {
     }
 
     @RequestMapping(path = "invitation/" ,method = RequestMethod.POST)
-    public void inviteUserToGroup(@RequestBody Group group, int inviteCode) {
-
-        if(inviteCode == groupDao.inviteCodeGenerator()) {
-            groupDao.inviteUserIntoGroup(group.getGroupId(), group.getMemberOfGroupId());
-        } else {
-            System.out.println("Invalid invite code!!");
-        }
+    public void inviteUserToGroup(@RequestBody Invite invite) {
+        inviteDao.inviteUserIntoGroup(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId());
     }
 }

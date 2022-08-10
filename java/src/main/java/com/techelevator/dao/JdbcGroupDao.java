@@ -53,7 +53,6 @@ public class JdbcGroupDao implements GroupDao{
 
         jdbcTemplate.update(sql, groupId, memberId);
 
-
     }
 
     public int inviteCodeGenerator() {
@@ -62,14 +61,12 @@ public class JdbcGroupDao implements GroupDao{
         return n;
     }
 
-
     private Group mapRowToGroup(SqlRowSet rowSet) {
         Group group = new Group();
 
         group.setGroupId(rowSet.getInt("group_id"));
         group.setGroupName(rowSet.getString("group_name"));
         group.setJoinedDate(rowSet.getDate("joined_date").toLocalDate());
-
 
         return group;
     }

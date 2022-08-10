@@ -35,8 +35,8 @@ public class JdbcItemDao implements ItemDao{
         List<Item> itemLists = new ArrayList<>();
         String sql = "SELECT item_id, i.list_id,  item_name, quantity, date_added, created_by " +
                 "FROM items i JOIN lists l ON  l.list_id = i.list_id JOIN accounts a " +
-                "ON a.account_id = l.account_id JOIN users u ON u.user_id = a.user_id WHERE i.list_id = ? ORDER BY item_name" +
-                "AND username = ?;";
+                "ON a.account_id = l.account_id JOIN users u ON u.user_id = a.user_id WHERE i.list_id = ? " +
+                "AND username = ? ORDER BY item_name;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, listId, username);
         while(results.next()) {
             Item itemResult = mapRowToItem(results);

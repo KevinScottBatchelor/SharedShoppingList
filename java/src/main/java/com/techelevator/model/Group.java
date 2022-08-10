@@ -6,14 +6,13 @@ public class Group {
 
     private int groupId;
     private String groupName;
-
     private LocalDate joinedDate;
-
     private int memberOfGroupId;
 
     public Group(){}
 
     public Group(int groupId, String groupName, LocalDate joinedDate, int memberOfGroupId) {
+
         this.groupId = groupId;
         this.groupName = groupName;
         this.joinedDate = joinedDate;
@@ -52,6 +51,7 @@ public class Group {
     public void setMemberOfGroupId(int memberOfGroupId) {
         this.memberOfGroupId = memberOfGroupId;
     }
+
 
     @Override
     public String toString() {
