@@ -8,5 +8,5 @@ public interface InviteDao {
 
     int inviteCodeGenerator();
 
-
+    void updateInviteStatus(int invitedUser, int fromUser, int groupId);
 }

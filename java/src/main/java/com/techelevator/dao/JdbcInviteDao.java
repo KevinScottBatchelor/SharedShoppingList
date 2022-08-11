@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.model.UserNotFoundException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,11 @@ public class JdbcInviteDao implements InviteDao{
 
         jdbcTemplate.update(sql, groupId, invitedUser);
 
+
+    }
+
+    @Override
+    public void updateInviteStatus(int invitedUser, int fromUser, int groupId) {
         String changeStatus = "UPDATE invite_status SET is_accepted = true WHERE invited_user = ? AND from_user = ? " +
                 "AND group_id = ?;";
 

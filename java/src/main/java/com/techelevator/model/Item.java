@@ -12,9 +12,19 @@ public class Item {
     private LocalDate dateAdded;
     private String createdBy;
 
-    public Item() {}
+    private LocalDate dateModified;
 
-    public Item(int itemId, int listId, String itemName, int quantity, LocalDate dateAdded, String createdBy) {
+    private String modifiedBy;
+
+    private int groupId;
+
+    private int memberOfGroupId;
+
+    public Item() {
+    }
+
+    public Item(int itemId, int listId, String itemName, int quantity, LocalDate dateAdded, String createdBy,
+                LocalDate dateModified, String modifiedBy, int groupId, int memberOfGroupId) {
         this.itemId = itemId;
         this.listId = listId;
         this.itemName = itemName;
@@ -71,6 +81,38 @@ public class Item {
         this.createdBy = createdBy;
     }
 
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public int getMemberOfGroupId() {
+        return memberOfGroupId;
+    }
+
+    public void setMemberOfGroupId(int memberOfGroupId) {
+        this.memberOfGroupId = memberOfGroupId;
+    }
+
+    public LocalDate getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(LocalDate dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -80,6 +122,10 @@ public class Item {
                 ", quantity=" + quantity +
                 ", dateAdded=" + dateAdded +
                 ", createdBy='" + createdBy + '\'' +
+                ", dateModified=" + dateModified +
+                ", modifiedBy='" + modifiedBy + '\'' +
+                ", groupId=" + groupId +
+                ", memberOfGroupId=" + memberOfGroupId +
                 '}';
     }
 }

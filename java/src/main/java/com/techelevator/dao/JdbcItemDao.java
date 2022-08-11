@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.ItemNotFoundException;
 import com.techelevator.model.Item;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -22,11 +23,12 @@ public class JdbcItemDao implements ItemDao{
     @Override
     public Item getItemByItemId(int itemId) {
         Item item = null;
-        String sql = "SELECT * FROM items WHERE item_id = ?;";
+        String sql = "SELECT * FROM items i JOIN lists_in_group lip ON lip.list_id = i.list_id " +
+                "JOIN account_groups ag ON ag.group_id = lip.group_id;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, itemId);
         if(results.next()) {
             item = mapRowToItem(results);
-        }
+        } else throw new ItemNotFoundException();
         return item;
     }
 
@@ -46,16 +48,26 @@ public class JdbcItemDao implements ItemDao{
     }
 
     @Override
-    public void createItem(String itemName, int listId, int quantity, LocalDate dateAdded, String createdBy) {
+    public Item createItem(Item item, String username) {
+
         String sql = "INSERT INTO items(item_name, list_id, quantity, date_added, created_by)" +
-                "VALUES (?,?,?,?,?);";
-        jdbcTemplate.update(sql, itemName,listId,quantity,dateAdded,createdBy);
+                "VALUES (?,?,?,current_date,?) RETURNING item_id;";
+        Integer itemId = jdbcTemplate.queryForObject(sql,Integer.class, item.getItemName(), item.getListId(), item.getQuantity(), username);
+
+        return getItemByItemId(itemId);
     }
 
     @Override
     public void removeItem(int itemId) {
         String sql = "DELETE FROM items WHERE item_id = ?;";
         jdbcTemplate.update(sql, itemId);
+    }
+    @Override
+    public void updateItem(int itemId, String itemName, int quantity, String modifiedBy) {
+        String sql = "UPDATE items SET item_name = ? , quantity = ?, date_modified = current_Date, modified_by = ?" +
+                " WHERE item_id = ?; ";
+
+        jdbcTemplate.update(sql, itemName, quantity, modifiedBy, itemId);
     }
 
     private Item mapRowToItem(SqlRowSet rowSet) {
@@ -67,6 +79,10 @@ public class JdbcItemDao implements ItemDao{
         item.setQuantity(rowSet.getInt("quantity"));
         item.setDateAdded(rowSet.getDate("date_added").toLocalDate());
         item.setCreatedBy(rowSet.getString("created_by"));
+        item.setDateModified(rowSet.getDate("date_modified").toLocalDate());
+        item.setModifiedBy(rowSet.getString("modified_By"));
+        item.setGroupId(rowSet.getInt("group_id"));
+        item.setMemberOfGroupId(rowSet.getInt("member_of_group_id"));
 
         return item;
     }

@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.GroupNotFoundException;
 import com.techelevator.model.Group;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -33,6 +34,20 @@ public class JdbcGroupDao implements GroupDao{
         return groups;
     }
 
+    public Group getGroupByGroupId(int groupId) {
+        Group group = null;
+        String sql = "SELECT * FROM groups WHERE group_id = ?; ";
+
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql,groupId);
+
+        if(result.next()) {
+            group = mapRowToGroup(result);
+        } else throw new GroupNotFoundException();
+
+        return group;
+
+    }
+
     @Override
     public void createGroup(Group group, int accountId) {
 
@@ -47,18 +62,10 @@ public class JdbcGroupDao implements GroupDao{
     }
 
     @Override
-    public void inviteUserIntoGroup(int groupId, int memberId) {
-        String sql = "INSERT INTO account_groups(group_id, member_of_group_id, is_creator, joined_date) " +
-                "VALUES(?, ?, false, current_date);";
+    public void deleteUserFromGroup(int accountId, int groupId) {
+        String sql = "DELETE FROM account_groups WHERE member_of_group_id = ? AND group_id = ?;";
 
-        jdbcTemplate.update(sql, groupId, memberId);
-
-    }
-
-    public int inviteCodeGenerator() {
-        Random rnd = new Random();
-        int n = 100000 + rnd.nextInt(900000);
-        return n;
+        jdbcTemplate.update(sql,accountId, groupId);
     }
 
     private Group mapRowToGroup(SqlRowSet rowSet) {
@@ -67,6 +74,8 @@ public class JdbcGroupDao implements GroupDao{
         group.setGroupId(rowSet.getInt("group_id"));
         group.setGroupName(rowSet.getString("group_name"));
         group.setJoinedDate(rowSet.getDate("joined_date").toLocalDate());
+        group.setCreator(rowSet.getBoolean("is_creator"));
+        group.setMemberOfGroupId(rowSet.getInt("member_of_group_id"));
 
         return group;
     }

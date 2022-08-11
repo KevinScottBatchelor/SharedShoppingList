@@ -9,6 +9,8 @@ public class Invite {
     private int fromUser;
     private int groupId;
 
+    public Invite(){}
+
     public Invite(int inviteId, int inviteCode, boolean isAccepted, int invitedUser, int fromUser, int groupId) {
         this.inviteId = inviteId;
         this.inviteCode = inviteCode;
