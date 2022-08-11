@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.GroupNotFoundException;
 import com.techelevator.model.Group;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -41,7 +42,8 @@ public class JdbcGroupDao implements GroupDao{
 
         if(result.next()) {
             group = mapRowToGroup(result);
-        }
+        } else throw new GroupNotFoundException();
+
         return group;
 
     }

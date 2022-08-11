@@ -12,6 +12,10 @@ public class Item {
     private LocalDate dateAdded;
     private String createdBy;
 
+    private LocalDate dateModified;
+
+    private String modifiedBy;
+
     private int groupId;
 
     private int memberOfGroupId;
@@ -19,7 +23,8 @@ public class Item {
     public Item() {
     }
 
-    public Item(int itemId, int listId, String itemName, int quantity, LocalDate dateAdded, String createdBy, int groupId, int memberOfGroupId) {
+    public Item(int itemId, int listId, String itemName, int quantity, LocalDate dateAdded, String createdBy,
+                LocalDate dateModified, String modifiedBy, int groupId, int memberOfGroupId) {
         this.itemId = itemId;
         this.listId = listId;
         this.itemName = itemName;
@@ -92,6 +97,22 @@ public class Item {
         this.memberOfGroupId = memberOfGroupId;
     }
 
+    public LocalDate getDateModified() {
+        return dateModified;
+    }
+
+    public void setDateModified(LocalDate dateModified) {
+        this.dateModified = dateModified;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -101,6 +122,8 @@ public class Item {
                 ", quantity=" + quantity +
                 ", dateAdded=" + dateAdded +
                 ", createdBy='" + createdBy + '\'' +
+                ", dateModified=" + dateModified +
+                ", modifiedBy='" + modifiedBy + '\'' +
                 ", groupId=" + groupId +
                 ", memberOfGroupId=" + memberOfGroupId +
                 '}';

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ShoppingListDao {
 
+    ShoppingList viewShoppingListByListId(int listId);
     List<ShoppingList> viewShoppingListsByAccountId(int accountId);
 
     void createShoppingList(ShoppingList shoppingList);
@@ -15,5 +16,8 @@ public interface ShoppingListDao {
 
     List<ShoppingList> viewGroupShoppingLists(int groupId);
 
-    void clearList(int listId);
+    void clearListWithoutGroup(int listId, int accountId);
+
+    void clearListInGroup(int listId, int accountId);
+    void claimShoppingList(int listId, String claimedBy);
 }

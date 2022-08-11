@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -40,29 +42,25 @@ public class ItemController {
         return itemDao.listAllItemsByListId(id, principal.getName());
 
     }
-    @RequestMapping(path = "delete", method = RequestMethod.DELETE)
-    public void removeItemById(@RequestParam int itemId, Principal principal, Item item) {
-        item = itemDao.getItemByItemId(itemId);
-        if(item.getCreatedBy().equals(principal.getName())) {
-            itemDao.removeItem(itemId);
-        }
+
+    @ResponseStatus(HttpStatus.GONE)
+    @RequestMapping(path = "deleteItem", method = RequestMethod.DELETE)
+    public void removeItemById(@RequestParam int itemId, Principal principal) {
+        itemDao.removeItem(itemId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "items", method = RequestMethod.POST)
-    public Item createItem(@RequestBody Item item, Principal principal) {
-
-            item = itemDao.createItem(item, principal.getName());
-
+    public Item createItem(@RequestBody @Valid Item item, Principal principal) {
+        item = itemDao.createItem(item, principal.getName());
         return item;
     }
 
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "items/{itemId}", method = RequestMethod.PUT)
-    public void updateItem(@RequestBody Item item, @PathVariable int itemId, Principal principal) {
-
+    public void updateItem(@RequestBody @Valid Item item, @PathVariable int itemId, Principal principal) {
         if(item.getCreatedBy().equals(principal.getName()) ||
                 accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == item.getMemberOfGroupId())
-
-        itemDao.updateItem(itemId, item.getItemName(), item.getQuantity());
+        itemDao.updateItem(itemId, item.getItemName(), item.getQuantity(), principal.getName());
     }
 }

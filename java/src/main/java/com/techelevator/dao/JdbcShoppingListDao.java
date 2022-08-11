@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.ShoppingListNotFoundException;
 import com.techelevator.model.Item;
 import com.techelevator.model.ShoppingList;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,19 @@ public class JdbcShoppingListDao implements ShoppingListDao{
 
     public JdbcShoppingListDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    @Override
+    public ShoppingList viewShoppingListByListId(int listId) {
+        ShoppingList shoppingList = null;
+        String sql = "SELECT * FROM lists WHERE list_id = ? ";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, listId);
+
+        if(result.next()) {
+            shoppingList = mapRowToShoppingList(result);
+        } else throw new ShoppingListNotFoundException();
+
+        return shoppingList;
     }
 
     @Override
@@ -41,6 +55,7 @@ public class JdbcShoppingListDao implements ShoppingListDao{
         while(results.next()) {
             shoppingLists.add(mapRowToShoppingList(results));
         }
+
         return shoppingLists;
     }
 
@@ -50,6 +65,14 @@ public class JdbcShoppingListDao implements ShoppingListDao{
         jdbcTemplate.update(sql,shoppingList.getListName(), shoppingList.getAccountId(), shoppingList.getClaimedBy());
     }
 
+    public void claimShoppingList(int listId, String claimedBy) {
+        String sql = "UPDATE lists SET claimed_by = ? WHERE list_id = ?; ";
+        jdbcTemplate.update(sql, claimedBy, listId);
+    }
+
+
+    //UPDATE LIST NAME
+
     @Override
     public void removeShoppingList(int listId, int accountId) {
         String sql = "DELETE FROM lists l WHERE l.list_id = ? AND account_id = ?";
@@ -58,10 +81,22 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     }
 
     @Override
-    public void clearList(int listId) {
-        String sql = "DELETE FROM items WHERE list_id = ?; ";
+    public void clearListWithoutGroup(int listId, int accountId) {
+        String sql = "DELETE FROM items WHERE list_id = ? AND account_id IN " +
+                "(SELECT account_id FROM lists WHERE account_id = ?); ";
 
-        jdbcTemplate.update(sql, listId);
+        jdbcTemplate.update(sql, listId, accountId);
+    }
+
+    @Override
+    public void clearListInGroup(int listId, int accountId) {
+        String sql = "DELETE FROM items i WHERE i.list_id = ? AND i.list_id IN " +
+                "(SELECT l.list_id FROM lists l JOIN lists_in_group lig ON l.list_id = lig.list_id " +
+                "JOIN groups g ON lig.group_id = g.group_id " +
+                "JOIN account_groups ag ON ag.group_id = g.group_id " +
+                "WHERE member_of_group_id = ? ); ";
+
+        jdbcTemplate.update(sql, listId, accountId);
     }
 
 

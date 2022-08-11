@@ -1,10 +1,10 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.AccountNotFoundException;
 import com.techelevator.model.Account;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-
 @Component
 public class JdbcAccountDao implements AccountDao {
 
@@ -15,12 +15,14 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public String getUsernameByAccountId(int accountId) {
+    public String getUsernameByAccountId(int accountId){
         String sql = "SELECT username FROM users u JOIN accounts a ON a.user_id = u.user_id WHERE account_id = ? " +
                 "RETURNING username;";
         String username = null;
 
         username = jdbcTemplate.queryForObject(sql, String.class, accountId);
+
+        if(username == null) throw new AccountNotFoundException();
 
         return username;
     }
@@ -33,9 +35,9 @@ public class JdbcAccountDao implements AccountDao {
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, username);
 
-        if(results.next()) {
-            account = mapRowToAccount(results);
-        }
+        if (results.next()) {
+                account = mapRowToAccount(results);
+            } else throw new AccountNotFoundException();
 
         return account;
     }

@@ -34,7 +34,9 @@ CREATE TABLE items (
         item_name varchar(30) NOT NULL,
         quantity int NOT NULL,
         date_added date NOT NULL,
-        created_by varchar(50), 
+        created_by varchar(50),
+        date_modified date,
+        modified_by varchar(50)
         
         CONSTRAINT PK_item_id PRIMARY KEY (item_id),
         CONSTRAINT FK_list_id FOREIGN KEY (list_id) REFERENCES lists(list_id)
@@ -74,6 +76,8 @@ CREATE TABLE invite_status (
         invite_code varchar(6) NOT NULL,
         is_accepted boolean DEFAULT false,
         invited_user int,
+        from_user int,
+        group_id int
         
         CONSTRAINT PK_invite_id PRIMARY KEY (invite_id),
         CONSTRAINT FK_invite_user FOREIGN KEY (invited_user) REFERENCES accounts(account_id)

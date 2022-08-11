@@ -7,6 +7,15 @@ public class ShoppingList {
     private int accountId;
     private String claimedBy;
 
+    public ShoppingList(){}
+
+    public ShoppingList(int listId, String listName, int accountId, String claimedBy) {
+        this.listId = listId;
+        this.listName = listName;
+        this.accountId = accountId;
+        this.claimedBy = claimedBy;
+    }
+
     public int getListId() {
         return listId;
     }

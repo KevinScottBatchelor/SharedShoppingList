@@ -1,5 +1,6 @@
 package com.techelevator.dao;
 
+import com.techelevator.Exception.ItemNotFoundException;
 import com.techelevator.model.Item;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -27,7 +28,7 @@ public class JdbcItemDao implements ItemDao{
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, itemId);
         if(results.next()) {
             item = mapRowToItem(results);
-        }
+        } else throw new ItemNotFoundException();
         return item;
     }
 
@@ -50,8 +51,8 @@ public class JdbcItemDao implements ItemDao{
     public Item createItem(Item item, String username) {
 
         String sql = "INSERT INTO items(item_name, list_id, quantity, date_added, created_by)" +
-                "VALUES (?,?,?,?,?) RETURNING item_id;";
-        Integer itemId = jdbcTemplate.queryForObject(sql,Integer.class, item.getItemName(), item.getListId(), item.getQuantity(), item.getDateAdded(), username);
+                "VALUES (?,?,?,current_date,?) RETURNING item_id;";
+        Integer itemId = jdbcTemplate.queryForObject(sql,Integer.class, item.getItemName(), item.getListId(), item.getQuantity(), username);
 
         return getItemByItemId(itemId);
     }
@@ -62,10 +63,11 @@ public class JdbcItemDao implements ItemDao{
         jdbcTemplate.update(sql, itemId);
     }
     @Override
-    public void updateItem(int itemId, String itemName, int quantity) {
-        String sql = "UPDATE items SET item_name = ? , quantity = ? WHERE item_id = ?; ";
+    public void updateItem(int itemId, String itemName, int quantity, String modifiedBy) {
+        String sql = "UPDATE items SET item_name = ? , quantity = ?, date_modified = current_Date, modified_by = ?" +
+                " WHERE item_id = ?; ";
 
-        jdbcTemplate.update(sql, itemName, quantity, itemId);
+        jdbcTemplate.update(sql, itemName, quantity, modifiedBy, itemId);
     }
 
     private Item mapRowToItem(SqlRowSet rowSet) {
@@ -77,6 +79,8 @@ public class JdbcItemDao implements ItemDao{
         item.setQuantity(rowSet.getInt("quantity"));
         item.setDateAdded(rowSet.getDate("date_added").toLocalDate());
         item.setCreatedBy(rowSet.getString("created_by"));
+        item.setDateModified(rowSet.getDate("date_modified").toLocalDate());
+        item.setModifiedBy(rowSet.getString("modified_By"));
         item.setGroupId(rowSet.getInt("group_id"));
         item.setMemberOfGroupId(rowSet.getInt("member_of_group_id"));
 

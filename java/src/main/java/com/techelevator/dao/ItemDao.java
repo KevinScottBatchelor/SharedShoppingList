@@ -14,6 +14,6 @@ public interface ItemDao {
 
     void removeItem(int itemId);
 
-    void updateItem(int itemId, String itemName, int quantity);
+    void updateItem(int itemId, String itemName, int quantity, String modifiedBy);
 
 }
