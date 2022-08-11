@@ -14,4 +14,6 @@ public interface ShoppingListDao {
     void removeShoppingList(int listId, int accountId);
 
     List<ShoppingList> viewGroupShoppingLists(int groupId);
+
+    void clearList(int listId);
 }

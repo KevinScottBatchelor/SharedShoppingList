@@ -10,8 +10,10 @@ public interface ItemDao {
 
     List<Item> listAllItemsByListId(int listId, String username);
 
-    void createItem(String itemName, int listId, int quantity, LocalDate dateAdded, String createdBy);
+    Item createItem(Item item, String username);
 
     void removeItem(int itemId);
+
+    void updateItem(int itemId, String itemName, int quantity);
 
 }

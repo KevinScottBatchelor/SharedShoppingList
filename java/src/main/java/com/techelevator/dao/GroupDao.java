@@ -9,8 +9,8 @@ public interface GroupDao {
     void createGroup(Group group, int accountId);
     List<Group> viewGroupsByUsername(String username);
 
-    void inviteUserIntoGroup(int groupId, int memberId);
+    Group getGroupByGroupId(int groupId);
+    void deleteUserFromGroup(int accountId, int groupId);
 
-    int inviteCodeGenerator();
 
 }

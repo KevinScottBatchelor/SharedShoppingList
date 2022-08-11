@@ -1,9 +1,12 @@
 package com.techelevator.controller;
 
+import com.techelevator.dao.AccountDao;
 import com.techelevator.dao.JdbcShoppingListDao;
 import com.techelevator.dao.ShoppingListDao;
+import com.techelevator.model.Item;
 import com.techelevator.model.ShoppingList;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +20,11 @@ import java.util.List;
 public class ShoppingListController {
 
     private final ShoppingListDao shoppingListDao;
+    private final AccountDao accountDao;
 
-    public ShoppingListController(ShoppingListDao shoppingListDao) {
+    public ShoppingListController(ShoppingListDao shoppingListDao, AccountDao accountDao) {
         this.shoppingListDao = shoppingListDao;
+        this.accountDao = accountDao;
     }
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,4 +49,10 @@ public class ShoppingListController {
         return shoppingListDao.viewGroupShoppingLists(groupId);
     }
 
+    @RequestMapping(path = "delete", method = RequestMethod.DELETE)
+    public void clearList(@RequestParam int listId, ShoppingList shoppingList,Principal principal) {
+        if(accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == shoppingList.getAccountId() ) {  // NEED TO ADD SECOND PART OF VALIDATION
+            shoppingListDao.clearList(listId);
+        }
+    }
 }

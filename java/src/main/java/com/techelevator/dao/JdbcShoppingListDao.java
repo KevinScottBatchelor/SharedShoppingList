@@ -57,6 +57,13 @@ public class JdbcShoppingListDao implements ShoppingListDao{
         jdbcTemplate.update(sql, listId, accountId);
     }
 
+    @Override
+    public void clearList(int listId) {
+        String sql = "DELETE FROM items WHERE list_id = ?; ";
+
+        jdbcTemplate.update(sql, listId);
+    }
+
 
     private ShoppingList mapRowToShoppingList(SqlRowSet rowSet) {
         ShoppingList shoppingList = new ShoppingList();
