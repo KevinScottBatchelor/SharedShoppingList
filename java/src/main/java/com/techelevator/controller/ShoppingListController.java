@@ -55,8 +55,11 @@ public class ShoppingListController {
 
     @RequestMapping(path = "group{groupId}")
     public List<ShoppingList> viewShoppingListsByGroupId(@RequestParam int groupId) {
-        if(groupDao.getGroupByGroupId(groupId) == null) throw new GroupNotFoundException();
-        return shoppingListDao.viewGroupShoppingLists(groupId);
+
+        List<ShoppingList> newList = shoppingListDao.viewGroupShoppingLists(groupId);
+        if(newList == null) throw new GroupNotFoundException();
+
+        return newList;
     }
 
     @ResponseStatus(HttpStatus.GONE)
