@@ -8,8 +8,8 @@ import com.techelevator.dao.ShoppingListDao;
 import com.techelevator.model.Item;
 import com.techelevator.model.ShoppingList;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,36 +31,51 @@ public class ShoppingListController {
         this.groupDao = groupDao;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(method = RequestMethod.POST)
-    public void createShoppingList(@RequestBody @Valid ShoppingList shoppingList) {
-        shoppingListDao.createShoppingList(shoppingList);
+    @RequestMapping(path = "list{listId}")
+    public ShoppingList viewShoppingListByListId(@RequestParam int listId) {
+
+        return shoppingListDao.viewShoppingListByListId(listId);
     }
 
-    @RequestMapping(path = "account/{accountId}")
-    public List<ShoppingList> viewShoppingLists(@PathVariable int accountId) {
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(method = RequestMethod.POST)
+    public void createShoppingList(@RequestBody @Valid ShoppingList shoppingList, Principal principal) {
+        int accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
+        shoppingListDao.createShoppingList(shoppingList,accountId );
+    }
+
+    @RequestMapping(path = "account/mylists")
+    public List<ShoppingList> viewShoppingListsByAccountId(Principal principal) {
+        int accountId;
+        accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
+
         return shoppingListDao.viewShoppingListsByAccountId(accountId);
     }
 
-    @ResponseStatus(HttpStatus.GONE)
-    @RequestMapping(path ="{listId}", method = RequestMethod.DELETE)
-    public void removeShoppingList(@PathVariable int listId, @RequestParam int accountId) {
-        shoppingListDao.removeShoppingList(listId, accountId);
-    }
-
-    @RequestMapping
+    @RequestMapping(path = "group{groupId}")
     public List<ShoppingList> viewShoppingListsByGroupId(@RequestParam int groupId) {
         if(groupDao.getGroupByGroupId(groupId) == null) throw new GroupNotFoundException();
         return shoppingListDao.viewGroupShoppingLists(groupId);
     }
 
     @ResponseStatus(HttpStatus.GONE)
+    @RequestMapping(path ="delete/{listId}", method = RequestMethod.DELETE)
+    public void removeShoppingList(@PathVariable int listId, @RequestParam int accountId, Principal principal) {
+        accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
+        shoppingListDao.removeShoppingList(listId, accountId);
+    }
+
+
+    @ResponseStatus(HttpStatus.GONE)
     @RequestMapping(path = "delete", method = RequestMethod.DELETE)
     public void clearList(@RequestParam int listId, @RequestBody @Valid ShoppingList shoppingList,Principal principal) {
         if(accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == shoppingList.getAccountId()) {
             shoppingListDao.clearListWithoutGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
+            System.out.println("list is not in group but user is the list creator");
         } else {
             shoppingListDao.clearListInGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
+            System.out.println("list is in group and user is a group member");
         }
     }
 

@@ -43,16 +43,14 @@ public class GroupController {
     }
 
     @RequestMapping
-    public List<Group> viewAllGroupsByUsername(Principal principal){
-        return groupDao.viewGroupsByUsername(principal.getName());
+    public List<Group> viewAllGroupsByUsername(@RequestParam String username, Principal principal){
+        username = principal.getName();
+        return groupDao.viewGroupsByUsername(username);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "invitation/" ,method = RequestMethod.POST)
     public void inviteUserToGroup(@RequestBody Invite invite) {
-
-        String username = accountDao.getUsernameByAccountId(invite.getInvitedUser());
-        if (userDao.findByUsername(username) == null) throw new UserNotFoundException();
 
         inviteDao.inviteUserIntoGroup(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId());
 
@@ -61,8 +59,6 @@ public class GroupController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "{groupId}" , method = RequestMethod.POST)
     public void addUserIntoGroup(@RequestBody @Valid Invite invite, @PathVariable int groupId ) {
-        String username = accountDao.getUsernameByAccountId(invite.getInvitedUser());
-        if (userDao.findByUsername(username) == null) throw new UserNotFoundException();
 
         inviteDao.addUserIntoGroup(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId());
     }
@@ -70,14 +66,23 @@ public class GroupController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     @RequestMapping(path = "invitation/", method = RequestMethod.PUT)
     public void updateInviteStatus(@RequestBody @Valid Invite invite) {
-        inviteDao.updateInviteStatus(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId());
+
+        Invite newInvite = inviteDao.getInvitationById(invite.getInviteId());
+
+        if (newInvite.getInviteCode().equals( invite.getInviteCode())) {
+            inviteDao.updateInviteStatus(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId(), invite.getInviteCode());
+            System.out.print("Welcome!");
+
+        } else {
+            System.out.println("WRONG INVITE CODE");
+        }
     }
 
     @ResponseStatus(HttpStatus.GONE)
     @RequestMapping(path = "leave/", method = RequestMethod.DELETE)
     public void deleteUserFromGroup(@RequestParam int accountId, @RequestParam int groupId, Principal principal,@RequestBody @Valid Group group) {
 
-        if(accountId == accountDao.getAccountIdByUsername(principal.getName()).getAccountId() || group.isCreator()) {
+        if(accountId == group.getMemberOfGroupId() || group.isCreator()) {
             groupDao.deleteUserFromGroup(accountId, groupId);
         }
     }

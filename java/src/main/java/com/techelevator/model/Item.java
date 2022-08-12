@@ -31,6 +31,10 @@ public class Item {
         this.quantity = quantity;
         this.dateAdded = dateAdded;
         this.createdBy = createdBy;
+        this.dateModified = dateModified;
+        this.modifiedBy = modifiedBy;
+        this.groupId = groupId;
+        this.memberOfGroupId = memberOfGroupId;
     }
 
     public int getItemId() {

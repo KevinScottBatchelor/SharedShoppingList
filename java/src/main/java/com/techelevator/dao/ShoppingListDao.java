@@ -10,7 +10,7 @@ public interface ShoppingListDao {
     ShoppingList viewShoppingListByListId(int listId);
     List<ShoppingList> viewShoppingListsByAccountId(int accountId);
 
-    void createShoppingList(ShoppingList shoppingList);
+    void createShoppingList(ShoppingList shoppingList, int accountId);
 
     void removeShoppingList(int listId, int accountId);
 

@@ -3,7 +3,7 @@ package com.techelevator.model;
 public class Invite {
 
     private int inviteId;
-    private int inviteCode;
+    private String inviteCode;
     private boolean isAccepted;
     private int invitedUser;
     private int fromUser;
@@ -11,7 +11,7 @@ public class Invite {
 
     public Invite(){}
 
-    public Invite(int inviteId, int inviteCode, boolean isAccepted, int invitedUser, int fromUser, int groupId) {
+    public Invite(int inviteId, String inviteCode, boolean isAccepted, int invitedUser, int fromUser, int groupId) {
         this.inviteId = inviteId;
         this.inviteCode = inviteCode;
         this.isAccepted = isAccepted;
@@ -28,11 +28,11 @@ public class Invite {
         this.inviteId = inviteId;
     }
 
-    public int getInviteCode() {
+    public String getInviteCode() {
         return inviteCode;
     }
 
-    public void setInviteCode(int inviteCode) {
+    public void setInviteCode(String inviteCode) {
         this.inviteCode = inviteCode;
     }
 

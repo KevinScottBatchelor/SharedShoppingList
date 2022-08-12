@@ -48,8 +48,8 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     @Override
     public List<ShoppingList> viewGroupShoppingLists(int groupId) {
         List<ShoppingList> shoppingLists = new ArrayList<>();
-        String sql = "SELECT * FROM lists l JOIN lists_in_group lig ON l.list_id = lig.list_id WHERE group_id = ? " +
-                "ORDER BY list_name ;";
+        String sql = "SELECT * FROM lists l JOIN lists_in_group lig ON l.list_id = lig.list_id WHERE lig.group_id = ? " +
+                "ORDER BY l.list_name;";
 
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, groupId);
         while(results.next()) {
@@ -60,9 +60,9 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     }
 
     @Override
-    public void createShoppingList(ShoppingList shoppingList) {
+    public void createShoppingList(ShoppingList shoppingList, int accountId) {
         String sql = "INSERT INTO lists(list_name, account_id, claimed_by) VALUES (?,?,?);";
-        jdbcTemplate.update(sql,shoppingList.getListName(), shoppingList.getAccountId(), shoppingList.getClaimedBy());
+        jdbcTemplate.update(sql,shoppingList.getListName(), accountId, shoppingList.getClaimedBy());
     }
 
     public void claimShoppingList(int listId, String claimedBy) {
@@ -75,15 +75,23 @@ public class JdbcShoppingListDao implements ShoppingListDao{
 
     @Override
     public void removeShoppingList(int listId, int accountId) {
-        String sql = "DELETE FROM lists l WHERE l.list_id = ? AND account_id = ?";
+        String sql = "DELETE FROM items i " +
+                "WHERE i.list_id = ? AND i.list_id IN (SELECT i.list_id FROM items i " +
+                "JOIN lists l ON i.list_id = l.list_id JOIN accounts a ON l.account_id = ?); " +
+                "DELETE FROM lists_in_group lg " +
+                "WHERE lg.list_id = ? AND lg.list_id IN  (SELECT lg.list_id FROM lists_in_group lg " +
+                "JOIN lists l ON lg.list_id = l.list_id JOIN accounts a ON l.account_id = ?); " +
+                "DELETE FROM lists l " +
+                "WHERE l.list_id = ? AND l.list_id IN (SELECT l.list_id FROM lists l " +
+                "JOIN accounts a ON l.account_id = ? );";
 
-        jdbcTemplate.update(sql, listId, accountId);
+        jdbcTemplate.update(sql, listId, accountId, listId, accountId , listId, accountId);
     }
 
     @Override
     public void clearListWithoutGroup(int listId, int accountId) {
-        String sql = "DELETE FROM items WHERE list_id = ? AND account_id IN " +
-                "(SELECT account_id FROM lists WHERE account_id = ?); ";
+        String sql = "DELETE FROM items i WHERE i.list_id = (SELECT l.list_id FROM lists l " +
+                "WHERE i.list_id = ? AND l.account_id = ?);";
 
         jdbcTemplate.update(sql, listId, accountId);
     }
