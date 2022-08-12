@@ -1,7 +1,8 @@
 package com.techelevator.dao;
 
-import com.techelevator.model.UserNotFoundException;
+import com.techelevator.model.Invite;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
@@ -16,10 +17,22 @@ public class JdbcInviteDao implements InviteDao{
     }
 
     @Override
+    public Invite getInvitationById(int inviteId) {
+        Invite invite = new Invite();
+
+        String sql = "SELECT * FROM invite_status WHERE invite_id = ?; ";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, inviteId);
+        if(result.next()) {
+            invite = mapRowToInvite(result);
+        }
+        return invite;
+    }
+
+    @Override
     public void inviteUserIntoGroup(int invitedUser, int fromUser, int groupId) {
 
         int inviteCode = inviteCodeGenerator();
-        String sql = "INSERT INTO invite_status (invite_code, is_accepted, invited_user, from_user, to_group) VALUES" +
+        String sql = "INSERT INTO invite_status (invite_code, is_accepted, invited_user, from_user, group_id) VALUES" +
                 "(?, false, ?, ?, ?);";
 
         jdbcTemplate.update(sql,inviteCode, invitedUser, fromUser, groupId);
@@ -36,11 +49,11 @@ public class JdbcInviteDao implements InviteDao{
     }
 
     @Override
-    public void updateInviteStatus(int invitedUser, int fromUser, int groupId) {
+    public void updateInviteStatus(int invitedUser, int fromUser, int groupId, String inviteCode) {
         String changeStatus = "UPDATE invite_status SET is_accepted = true WHERE invited_user = ? AND from_user = ? " +
-                "AND group_id = ?;";
+                "AND group_id = ? AND invite_code = ?;";
 
-        jdbcTemplate.update(changeStatus, invitedUser, fromUser, groupId);
+        jdbcTemplate.update(changeStatus, invitedUser, fromUser, groupId, inviteCode);
     }
 
     @Override
@@ -48,5 +61,18 @@ public class JdbcInviteDao implements InviteDao{
         Random rnd = new Random();
         int n = 100000 + rnd.nextInt(900000);
         return n;
+    }
+
+    private Invite mapRowToInvite(SqlRowSet rowSet) {
+        Invite invite = new Invite();
+
+        invite.setInviteId(rowSet.getInt("invite_id"));
+        invite.setInviteCode(rowSet.getString("invite_code"));
+        invite.setAccepted(rowSet.getBoolean("is_accepted"));
+        invite.setInvitedUser(rowSet.getInt("invited_user"));
+        invite.setFromUser(rowSet.getInt("from_user"));
+        invite.setGroupId(rowSet.getInt("group_id"));
+
+        return invite;
     }
 }

@@ -32,7 +32,7 @@ public class ItemController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "items/{id}")
+    @RequestMapping(path = "item/{id}")
     public Item get(@PathVariable int id) {
         return itemDao.getItemByItemId(id);
     }
@@ -50,7 +50,7 @@ public class ItemController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(path = "items", method = RequestMethod.POST)
+    @RequestMapping(path = "createItem", method = RequestMethod.POST)
     public Item createItem(@RequestBody @Valid Item item, Principal principal) {
         item = itemDao.createItem(item, principal.getName());
         return item;

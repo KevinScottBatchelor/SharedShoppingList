@@ -6,7 +6,6 @@ public class ShoppingList {
     private String listName;
     private int accountId;
     private String claimedBy;
-
     public ShoppingList(){}
 
     public ShoppingList(int listId, String listName, int accountId, String claimedBy) {
@@ -14,6 +13,7 @@ public class ShoppingList {
         this.listName = listName;
         this.accountId = accountId;
         this.claimedBy = claimedBy;
+
     }
 
     public int getListId() {
@@ -47,6 +47,7 @@ public class ShoppingList {
     public void setClaimedBy(String claimedBy) {
         this.claimedBy = claimedBy;
     }
+
 
     @Override
     public String toString() {
