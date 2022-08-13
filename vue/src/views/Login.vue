@@ -21,7 +21,7 @@
         type="text"
         id="username"
         class="username-input"
-        placeholder="Email Address"
+        placeholder=" Email Address"
         v-model="user.username"
         required
         autofocus
@@ -31,12 +31,12 @@
         type="password"
         id="password"
         class="password-input"
-        placeholder="Password"
+        placeholder=" Password"
         v-model="user.password"
         required
       />
       <button class="signin-button" type="submit">Sign in</button>
-      <router-link :to="{ name: 'register' }" class="register-link">Sign up!</router-link>
+      <router-link :to="{ name: 'register' }" class="register-link">Sign Up!</router-link>
     </form>
     </div>
   </div>
@@ -89,6 +89,13 @@ export default {
 
 }
 
+img {
+  padding-top: 50px;
+  min-width: 100px;
+  display: block;
+  margin: 0 auto;
+}
+
 body {
   
   background-color: white;
@@ -119,32 +126,37 @@ body {
   display: grid;
   grid-template-columns: 1fr;
   place-items: center;
+  
 
 }
 
 #form {
-
-  padding-bottom: 75px;
-
+  width: 80%;
+  border-radius: 24px;
+  background-color: rgba(0, 0, 0, 0.03);
+  box-shadow: 0px 2px 6px -1px rgba(109, 103, 103, 0.712);
 }
 .form-signin {
 
   align-items: center;
   display: grid;
-  grid-template-columns: 2fr 2fr 3fr 2fr;
+  grid-template-columns: 6fr 2fr 4fr 6fr;
   grid-template-areas:  ". username-label username-input ."
                         ". password-label password-input ."
-                        ". . signin-button ."
-                        ". register-link register-link .";
+                        ". . alert ."
+                        ". register-link signin-button .";
+                        
                         
   gap: 25px;
+  
 
 }
 
 label {
 
   font-weight: 10;
-  font-size:  18px;
+  font-size:  16px;
+  color: grey;
 
 }
 
@@ -180,6 +192,7 @@ label {
 
 .register-link {
 
+  color: rgb(69, 69, 69);
   grid-area: register-link;
 
 }
@@ -190,6 +203,7 @@ input {
   padding:  20px 0px; 
   height:  56px; 
   border:  none; 
+  border-radius: 12px;
   border-bottom:  solid 1px rgba(0,0,0,.1); 
   background:  #fff; 
   width:  auto; 
@@ -200,7 +214,7 @@ input {
   
 }
 
-button {
+.signin-button {
   width:  auto;
   min-width:  50px;
   border-radius:  24px; 
@@ -210,5 +224,20 @@ button {
   font-size:  14px; 
   box-shadow:  0px 2px 6px -1px rgba(109, 103, 103, 0.712); 
   border:  none; 
+  
 }
+
+.signin-button:hover {
+  background-color:  rgb(60, 60, 60);
+  color: rgb(217, 217, 217);
+  transition: 0.6s;
+}
+
+.signin-button:active {
+  background-color: rgb(128, 128, 128);
+  border: 4px solid rgb(53, 53, 53);
+  transition: 0.1s;
+  
+}
+
 </style>
