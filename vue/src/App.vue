@@ -7,3 +7,11 @@
     <router-view />
   </div>
 </template>
+
+<style>
+
+#nav {
+  font-size: 10px;
+}
+
+</style>
