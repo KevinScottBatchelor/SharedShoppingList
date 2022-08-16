@@ -17,8 +17,9 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping(path = "lists/")
+@CrossOrigin
 public class ShoppingListController {
 
     private final ShoppingListDao shoppingListDao;
@@ -31,8 +32,8 @@ public class ShoppingListController {
         this.groupDao = groupDao;
     }
 
-    @RequestMapping(path = "list{listId}")
-    public ShoppingList viewShoppingListByListId(@RequestParam int listId) {
+    @RequestMapping(path = "list/{listId}")
+    public ShoppingList viewShoppingListByListId(@PathVariable int listId) {
 
         return shoppingListDao.viewShoppingListByListId(listId);
     }

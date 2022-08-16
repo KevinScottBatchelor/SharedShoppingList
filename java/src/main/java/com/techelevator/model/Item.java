@@ -16,15 +16,13 @@ public class Item {
 
     private String modifiedBy;
 
-    private int groupId;
 
-    private int memberOfGroupId;
 
     public Item() {
     }
 
     public Item(int itemId, int listId, String itemName, int quantity, LocalDate dateAdded, String createdBy,
-                LocalDate dateModified, String modifiedBy, int groupId, int memberOfGroupId) {
+                LocalDate dateModified, String modifiedBy) {
         this.itemId = itemId;
         this.listId = listId;
         this.itemName = itemName;
@@ -33,8 +31,7 @@ public class Item {
         this.createdBy = createdBy;
         this.dateModified = dateModified;
         this.modifiedBy = modifiedBy;
-        this.groupId = groupId;
-        this.memberOfGroupId = memberOfGroupId;
+
     }
 
     public int getItemId() {
@@ -85,22 +82,6 @@ public class Item {
         this.createdBy = createdBy;
     }
 
-    public int getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(int groupId) {
-        this.groupId = groupId;
-    }
-
-    public int getMemberOfGroupId() {
-        return memberOfGroupId;
-    }
-
-    public void setMemberOfGroupId(int memberOfGroupId) {
-        this.memberOfGroupId = memberOfGroupId;
-    }
-
     public LocalDate getDateModified() {
         return dateModified;
     }
@@ -128,8 +109,6 @@ public class Item {
                 ", createdBy='" + createdBy + '\'' +
                 ", dateModified=" + dateModified +
                 ", modifiedBy='" + modifiedBy + '\'' +
-                ", groupId=" + groupId +
-                ", memberOfGroupId=" + memberOfGroupId +
                 '}';
     }
 }
