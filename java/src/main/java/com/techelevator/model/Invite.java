@@ -9,15 +9,18 @@ public class Invite {
     private int fromUser;
     private int groupId;
 
+    private String groupName;
+
     public Invite(){}
 
-    public Invite(int inviteId, String inviteCode, boolean isAccepted, int invitedUser, int fromUser, int groupId) {
+    public Invite(int inviteId, String inviteCode, boolean isAccepted, int invitedUser, int fromUser, int groupId, String groupName) {
         this.inviteId = inviteId;
         this.inviteCode = inviteCode;
         this.isAccepted = isAccepted;
         this.invitedUser = invitedUser;
         this.fromUser = fromUser;
         this.groupId = groupId;
+        this.groupName = groupName;
     }
 
     public int getInviteId() {
@@ -68,15 +71,24 @@ public class Invite {
         this.groupId = groupId;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     @Override
     public String toString() {
         return "Invite{" +
                 "inviteId=" + inviteId +
-                ", inviteCode=" + inviteCode +
+                ", inviteCode='" + inviteCode + '\'' +
                 ", isAccepted=" + isAccepted +
                 ", invitedUser=" + invitedUser +
                 ", fromUser=" + fromUser +
                 ", groupId=" + groupId +
+                ", groupName='" + groupName + '\'' +
                 '}';
     }
 }

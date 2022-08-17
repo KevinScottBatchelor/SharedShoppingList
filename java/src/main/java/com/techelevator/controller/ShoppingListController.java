@@ -39,7 +39,7 @@ public class ShoppingListController {
     }
 
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
     public void createShoppingList(@RequestBody @Valid ShoppingList shoppingList, Principal principal) {
         int accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
@@ -63,7 +63,7 @@ public class ShoppingListController {
         return newList;
     }
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path ="delete/{listId}", method = RequestMethod.DELETE)
     public void removeShoppingList(@PathVariable int listId, @RequestParam int accountId, Principal principal) {
         accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
@@ -71,19 +71,19 @@ public class ShoppingListController {
     }
 
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "delete", method = RequestMethod.DELETE)
-    public void clearList(@RequestParam int listId, @RequestBody @Valid ShoppingList shoppingList,Principal principal) {
-        if(accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == shoppingList.getAccountId()) {
-            shoppingListDao.clearListWithoutGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
-            System.out.println("list is not in group but user is the list creator");
-        } else {
+    public void clearList(@RequestParam int listId,@RequestParam(defaultValue = "0") int groupId, Principal principal) {
+        if(groupId != 0) {
             shoppingListDao.clearListInGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
             System.out.println("list is in group and user is a group member");
+        } else {
+            shoppingListDao.clearListWithoutGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
+            System.out.println("list is not in group but user is the list creator");
         }
     }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{listId}/claim", method = RequestMethod.PUT)
     public void claimShoppingList(@PathVariable int listId, @RequestBody @Valid ShoppingList shoppingList, Principal principal) {
 

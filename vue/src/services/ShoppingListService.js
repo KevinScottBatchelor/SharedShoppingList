@@ -12,9 +12,14 @@ export default {
         return http.post(`lists/`, shoppingList);
     },
 
-    viewShoppingListByListId(listId) {
+    viewAllItemsByListId(listId) {
         this.state = store.state;
         return http.get(`lists/${listId}`);
+    },
+
+    viewShoppingListByListId(listId) {
+        this.state = store.state;
+        return http.get(`lists/list/${listId}`);
     },
 
     viewShoppingListsByAccountId() {
@@ -24,17 +29,18 @@ export default {
 
     viewShoppingListsByGroupId(groupId) {
         this.state = store.state;
-        return http.get(`lists/group${groupId}`);
+        return http.get(`lists/group?groupId=${groupId}`);
     },
 
-    removeShoppingList(listId, shoppingList) {
+    removeShoppingList(listId) {
         this.state = store.state;
-        return http.delete(`lists/delete/${listId}`, shoppingList);
+        const id = this.state.user.id;
+        return http.delete(`lists/delete/${listId}?accountId=${id}`);
     },
 
-    clearList(shoppingList) {
+    clearList(listId, groupId) {
         this.state = store.state;
-        return http.delete(`lists/delete`, shoppingList);
+        return http.delete(`lists/delete?listId=${listId}&groupId=${groupId}`);
     },
 
     claimShoppingList(listId) {

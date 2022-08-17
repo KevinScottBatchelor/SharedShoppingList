@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(path = "groups/")
+@CrossOrigin
 public class GroupController {
 
     private final GroupDao groupDao;
@@ -35,17 +36,37 @@ public class GroupController {
         this.userDao = userDao;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "{groupId}", method = RequestMethod.GET)
+    public Group getGroupByGroupId(@PathVariable int groupId) {
+        return groupDao.getGroupByGroupId(groupId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
     public void createGroup(@RequestBody @Valid Group group, Principal principal) {
         Account account = accountDao.getAccountIdByUsername(principal.getName());
         groupDao.createGroup(group, account.getAccountId());
+    }
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "list/{groupId}", method=RequestMethod.POST)
+    public void createShoppingListInGroup(@RequestBody @Valid ShoppingList shoppingList, Principal principal,@PathVariable int groupId) {
+        int accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
+        groupDao.createShoppingListInGroup(shoppingList,accountId, groupId);
     }
 
     @RequestMapping
     public List<Group> viewAllGroupsByUsername(@RequestParam String username, Principal principal){
         username = principal.getName();
         return groupDao.viewGroupsByUsername(username);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "invitation/{accountId}", method = RequestMethod.GET)
+    public List<Invite> viewMyInvitations(@PathVariable int accountId, Principal principal) {
+        accountId = userDao.findIdByUsername(principal.getName());
+
+        return inviteDao.viewMyInvitations(accountId);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -56,14 +77,14 @@ public class GroupController {
 
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{groupId}" , method = RequestMethod.POST)
     public void addUserIntoGroup(@RequestBody @Valid Invite invite, @PathVariable int groupId ) {
 
         inviteDao.addUserIntoGroup(invite.getInvitedUser(), invite.getFromUser(), invite.getGroupId());
     }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "invitation/", method = RequestMethod.PUT)
     public void updateInviteStatus(@RequestBody @Valid Invite invite) {
 
@@ -78,13 +99,12 @@ public class GroupController {
         }
     }
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "leave/", method = RequestMethod.DELETE)
-    public void deleteUserFromGroup(@RequestParam int accountId, @RequestParam int groupId, Principal principal,@RequestBody @Valid Group group) {
+    public void deleteUserFromGroup(@RequestParam int accountId, @RequestParam int groupId) {
 
-        if(accountId == group.getMemberOfGroupId() || group.isCreator()) {
             groupDao.deleteUserFromGroup(accountId, groupId);
-        }
+
     }
 
 }

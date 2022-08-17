@@ -35,7 +35,7 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     @Override
     public List<ShoppingList> viewShoppingListsByAccountId(int accountId) {
         List<ShoppingList> itemLists = new ArrayList<>();
-        String sql = "SELECT * FROM lists WHERE account_id = ? ORDER BY list_name;";
+        String sql = "SELECT * FROM lists l WHERE l.account_id = ? AND l.list_id NOT IN (SELECT lig.list_id FROM lists_in_group lig)";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
 
         while(results.next()) {
@@ -91,7 +91,7 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     @Override
     public void clearListWithoutGroup(int listId, int accountId) {
         String sql = "DELETE FROM items i WHERE i.list_id = (SELECT l.list_id FROM lists l " +
-                "WHERE i.list_id = ? AND l.account_id = ?);";
+                "WHERE l.list_id = ? AND l.account_id = ?);";
 
         jdbcTemplate.update(sql, listId, accountId);
     }

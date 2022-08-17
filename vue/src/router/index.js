@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Logout from '../views/Logout.vue'
 import Register from '../views/Register.vue'
 import ShoppingListDetail from '../views/ShoppingListDetail.vue'
+import Group from '../views/Group.vue'
 import store from '../store/index'
 
 
@@ -25,7 +26,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: Home,
       meta: {
         requiresAuth: true
@@ -59,7 +60,13 @@ const router = new Router({
       path: "/list/:id",
       name: 'ShoppingListDetail',
       component: ShoppingListDetail
-    }
+    },
+    {
+      path: "/group/:id",
+      name: 'Group',
+      component: Group
+    },
+
 
  
   ]

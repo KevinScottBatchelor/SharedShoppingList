@@ -44,13 +44,13 @@ public class ItemController {
 
     }
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "deleteItem", method = RequestMethod.DELETE)
     public void removeItemById(@RequestParam int itemId, Principal principal) {
         itemDao.removeItem(itemId);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "createItem", method = RequestMethod.POST)
     public Item createItem(@RequestBody @Valid Item item, Principal principal) {
         item = itemDao.createItem(item, principal.getName());
