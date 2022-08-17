@@ -2,7 +2,7 @@
   <div>
     <div id="main-container">
         <div id="container">
-<div class="shopping-lists">
+            <div class="shopping-lists">
                 <h3 id="shoppinglist-title">My Shopping Lists</h3>
                     <div class="loading" v-if="isLoading">
                         <img src="../assets/Loading.gif" />
@@ -234,7 +234,7 @@ export default {
         this.addUserToGroup(this.newInvite.groupId, this.newInvite)        
         this.Correct = true;
         this.Error = false;
-        this.CMsg = 'Welcome!!!!'
+        this.CMsg = 'Welcome!!!! You will be redirected in 3 seconds'
         console.log("CORRECT")
         setTimeout(() => window.location.reload(), 3000); 
       } else {

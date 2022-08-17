@@ -103,8 +103,11 @@ public class JdbcShoppingListDao implements ShoppingListDao{
                 "JOIN groups g ON lig.group_id = g.group_id " +
                 "JOIN account_groups ag ON ag.group_id = g.group_id " +
                 "WHERE member_of_group_id = ? ); ";
-
         jdbcTemplate.update(sql, listId, accountId);
+
+        sql = "UPDATE lists SET claimed_by = null WHERE list_id = ?;";
+
+        jdbcTemplate.update(sql,listId);
     }
 
 

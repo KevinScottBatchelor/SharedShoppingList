@@ -105,7 +105,8 @@ export default {
             shoppingList: {
                 listId: "",
                 listName: "",
-                accountId: ""
+                accountId: "",
+                claimedBy: ""
             },
             addForm: false
         }
@@ -155,8 +156,9 @@ export default {
             this.modifiedItem = item;
         },
         clearAList() {
-            ShoppingListService.clearList(this.$route.params.id, 0).then(response => {
+            ShoppingListService.clearList(this.$route.params.id, 18).then(response => {
                 if(response.status === 200) {
+                    
                     window.location.reload();
                 }
             })

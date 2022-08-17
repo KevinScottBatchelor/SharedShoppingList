@@ -43,9 +43,9 @@ export default {
         return http.delete(`lists/delete?listId=${listId}&groupId=${groupId}`);
     },
 
-    claimShoppingList(listId) {
+    claimShoppingList(listId,shoppingList) {
         this.state = store.state;
-        return http.put(`lists/${listId}/claim`);
+        return http.put(`lists/${listId}/claim`,shoppingList);
     }
 
 }
