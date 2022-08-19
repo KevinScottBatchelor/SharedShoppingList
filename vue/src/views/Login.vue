@@ -1,21 +1,32 @@
 <template>
 <div id="main-container">
+
   <div id="form">
-    <img src="../assets/MAJiK Logo.png"/>
+    <div class="pyramid">
+      <div class="base"></div>
+      <div class="side one"></div>
+      <div class="side two"></div>
+      <div class="side three"></div>
+      <div class="side four"></div>
+    </div>
+
+    <img src="../assets/white MAJiK Logo.png"/>
     <h1 class="login-header">Welcome Back!</h1>
+    <div
+    class="alert-success"
+    role="alert"
+    v-if="this.$route.query.registration"
+    >Thank you for registering, please sign in.
+    </div>
+    <div
+      class="alert-danger"
+      role="alert"
+      v-if="invalidCredentials"
+    >Invalid email address and password!
+    </div>
     <form class="form-signin" @submit.prevent="login">
-      <div
-        class="alert alert-danger"
-        role="alert"
-        v-if="invalidCredentials"
-      >Invalid email address and password!
-      </div>
-      <div
-        class="alert alert-success"
-        role="alert"
-        v-if="this.$route.query.registration"
-      >Thank you for registering, please sign in.
-      </div>
+
+
       <label for="username" class="username-label">Email </label>
       <input
         type="text"
@@ -35,6 +46,7 @@
         v-model="user.password"
         required
       />
+
       <button class="signin-button" type="submit">Sign in</button>
       <router-link :to="{ name: 'register' }" class="register-link">Sign Up!</router-link>
     </form>
@@ -66,6 +78,7 @@ export default {
             this.$store.commit("SET_AUTH_TOKEN", response.data.token);
             this.$store.commit("SET_USER", response.data.user);
             this.$router.push("/");
+            this.$forceUpdate();
           }
         })
         .catch(error => {
@@ -80,7 +93,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 
 *{
 
@@ -89,11 +102,22 @@ export default {
 
 }
 
+
 img {
-  padding-top: 50px;
-  min-width: 100px;
+  width: 40%;
+  min-width: 360px;
   display: block;
   margin: 0 auto;
+}
+
+.alert-success {
+  text-align: center;
+  color: rgb(54, 52, 52);
+}
+
+.alert-danger{
+  text-align: center;
+  color: rgb(227, 108, 108);
 }
 
 body {
@@ -103,18 +127,17 @@ body {
 
 }
 
-#nav {
+div #nav {
 
-  display: block;
-  position: fixed;
-  grid-area: nav;
+  display: none;
+ 
 
 }
 
 .login-header {
     
     margin: 0px;
-    padding-bottom: 50px;
+    padding-bottom: 30px;
     text-align: center;
     color: rgb(54, 52, 52);
 
@@ -131,10 +154,14 @@ body {
 }
 
 #form {
-  width: 80%;
+  width: 60%;
   border-radius: 24px;
-  background-color: rgba(0, 0, 0, 0.03);
+  background-color: rgba(135, 122, 88, 0.45);
   box-shadow: 0px 2px 6px -1px rgba(109, 103, 103, 0.712);
+  margin-top:75px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+
 }
 .form-signin {
 
@@ -156,7 +183,7 @@ label {
 
   font-weight: 10;
   font-size:  16px;
-  color: grey;
+  color: rgb(47, 47, 47);
 
 }
 
@@ -200,7 +227,7 @@ label {
 input {
 
   font-size:  16px; 
-  padding:  20px 0px; 
+  padding:  10px; 
   height:  56px; 
   border:  none; 
   border-radius: 12px;
@@ -217,13 +244,14 @@ input {
 .signin-button {
   width:  auto;
   min-width:  50px;
-  border-radius:  24px; 
+  border-radius:  12px; 
   text-align:  center; 
   padding:  15px 40px;  
   color:  rgb(80, 80, 80); 
   font-size:  14px; 
   box-shadow:  0px 2px 6px -1px rgba(109, 103, 103, 0.712); 
   border:  none; 
+  background-color: rgba(135, 122, 88, 0.45);
   
 }
 
@@ -238,6 +266,63 @@ input {
   border: 4px solid rgb(53, 53, 53);
   transition: 0.1s;
   
+}
+
+.pyramid {
+  margin: 0 auto;
+  margin-bottom: 20px;
+  position: relative;
+  width: 200px;
+  height: 200px;
+  transform-style: preserve-3d;
+  transform: rotateY(326deg) rotateX(2deg) rotateZ(359deg);
+  animation: rotate 5s linear infinite;
+}
+.side {
+  width: 0;
+  height: 0;
+  position: absolute;
+  opacity: 0.7;
+  border: 100px solid transparent;
+  border-bottom: 200px solid rgba(109, 103, 103, 0.712);
+  border-top: 0px;
+}
+.one {
+  transform: rotateX(30deg);
+  transform-origin: 0 0;
+}
+.two {
+  transform-origin: 100px 0;
+  transform: rotateY(90deg) rotateX(-30deg);
+  border-bottom-color: rgba(109, 103, 103, 0.712);
+}
+.three {
+  transform-origin: 100px 0;
+  transform: rotateY(270deg) rotateX(-30deg);
+  border-bottom-color: rgba(109, 103, 103, 0.712);
+}
+.four {
+  transform-origin: 100px 0;
+  transform: rotateY(0) rotateX(-30deg);
+  border-bottom-color: rgba(109, 103, 103, 0.712);
+}
+.base {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: translateY(73px) rotateX(90deg);
+  border: 0;
+  background: rgba(109, 103, 103, 0.712);
+}
+@keyframes rotate {
+  from {
+    transform: rotateY(0)
+      rotateX(30deg) rotateZ(30deg);
+  }
+  to {
+    transform: rotateY(360deg)
+      rotateX(30deg) rotateZ(30deg);
+  }
 }
 
 </style>

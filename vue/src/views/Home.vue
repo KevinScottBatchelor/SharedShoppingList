@@ -9,6 +9,7 @@ import ShoppingList from '@/components/ShoppingList.vue';
 export default {
   components: {
     ShoppingList  
-  }
+  },
+  
 };
 </script>

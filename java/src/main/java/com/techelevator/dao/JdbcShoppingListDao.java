@@ -89,21 +89,23 @@ public class JdbcShoppingListDao implements ShoppingListDao{
     }
 
     @Override
-    public void clearListWithoutGroup(int listId, int accountId) {
+    public void clearListWithoutGroup(int listId) {
         String sql = "DELETE FROM items i WHERE i.list_id = (SELECT l.list_id FROM lists l " +
-                "WHERE l.list_id = ? AND l.account_id = ?);";
+                "WHERE l.list_id = ?);";
 
-        jdbcTemplate.update(sql, listId, accountId);
+        jdbcTemplate.update(sql, listId);
+
+        sql = "UPDATE lists SET claimed_by = null WHERE list_id = ?;";
+
+        jdbcTemplate.update(sql,listId);
     }
 
     @Override
-    public void clearListInGroup(int listId, int accountId) {
-        String sql = "DELETE FROM items i WHERE i.list_id = ? AND i.list_id IN " +
-                "(SELECT l.list_id FROM lists l JOIN lists_in_group lig ON l.list_id = lig.list_id " +
-                "JOIN groups g ON lig.group_id = g.group_id " +
-                "JOIN account_groups ag ON ag.group_id = g.group_id " +
-                "WHERE member_of_group_id = ? ); ";
-        jdbcTemplate.update(sql, listId, accountId);
+    public void clearListInGroup(int listId) {
+        String sql = "DELETE FROM items i WHERE i.list_id = (SELECT l.list_id FROM lists l " +
+                "WHERE l.list_id = ?);";
+
+        jdbcTemplate.update(sql, listId);
 
         sql = "UPDATE lists SET claimed_by = null WHERE list_id = ?;";
 

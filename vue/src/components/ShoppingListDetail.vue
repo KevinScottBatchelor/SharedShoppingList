@@ -1,9 +1,11 @@
 <template>
-    <div>
+    <div id="main-container">
+        <div id="container">
         <div class="loading" v-if="isLoading">
             <img src="../assets/Loading.gif" />
         </div>
-        <table id="table">
+        <h3>All ITEMS IN LIST</h3>
+        <table id="table" cellspacing="0" cellpadding="0">
             <thead>
             <tr>
                 <th>Item Name</th>
@@ -22,8 +24,10 @@
                     <td>{{ item.dateAdded }}</td>
                     <td>{{ item.createdBy }}</td>
                     <td>{{ item.dateModified }}</td>
-                    <td>{{ item.modifiedBy }}</td>                    
+                    <td>{{ item.modifiedBy }}</td>
+                                        
                     <div id="modify-form">
+                        
                         <button
                         id="modify-form-button"
                         href="#"
@@ -31,9 +35,26 @@
                         v-on:click.prevent="modifyForm = true, setModifiedItem(item)"
                         
                         >Modify</button>
+                        <button id="delete" class="modify-button" v-on:click="deleteItem(item.itemId)">Delete</button>
+                        <div id="modify-form">
+                        <form v-on:submit.prevent="modifyItem" v-if="item.itemId === modifiedItem.itemId && modifyForm === true">
+                        <div class="form-element">
+                            <label for="Item Name">Item Name:</label>
+                            <input id="Item Name" type="text" v-model="modifiedItem.itemName" />
+                        </div>
+                        <div class="form-element">
+                            <label for="Quantity">Quantity:</label>
+                            <input id="Quantity" type="text" v-model="modifiedItem.quantity" />
+                        </div>
+                        <button type="submit" value="Confirm">Confirm</button>
+                        <button type="button" value="Cancel" v-on:click.prevent="resetModifyForm">Cancel</button>
+                        </form>
+                        </div>
                     </div>
-                    <button class="modify-button" v-on:click="deleteItem(item.itemId)">Delete</button>
+                    
+                    
                 </tr>
+                
             </tbody>
         </table>
         <div id="add-form">
@@ -51,28 +72,17 @@
                 <label for="Quantity">Quantity:</label>
                 <input id="Quantity" type="text" v-model="newItem.quantity" />
             </div>
-            <input type="submit" value="Save" />
-            <input type="button" value="Cancel" v-on:click.prevent="resetAddForm" />
+            <button type="submit" value="Save">Save</button>
+            <button type="button" value="Cancel" v-on:click.prevent="resetAddForm">Cancel</button>
             </form>
         </div>
-
-        <div id="modify-form">
-        <form v-on:submit.prevent="modifyItem" v-if="modifyForm === true">
-        <div class="form-element">
-            <label for="Item Name">Item Name:</label>
-            <input id="Item Name" type="text" v-model="modifiedItem.itemName" />
-        </div>
-        <div class="form-element">
-            <label for="Quantity">Quantity:</label>
-            <input id="Quantity" type="text" v-model="modifiedItem.quantity" />
-        </div>
-        <input type="submit" value="Confirm" />
-        <input type="button" value="Cancel" v-on:click.prevent="resetModifyForm" />
-        </form>
-        </div>
-
         <div id="clear-list" v-bind:key="shoppingList.listId">
-        <button class="clear-list-button" v-on:click="clearAList">Clear list</button>
+            <button class="clear-list-button" v-on:click="clearAList">Clear list</button>
+        </div>
+
+        
+
+
         </div>
     </div>
 </template>
@@ -107,6 +117,7 @@ export default {
                 listName: "",
                 accountId: "",
                 claimedBy: ""
+                
             },
             addForm: false
         }
@@ -156,7 +167,7 @@ export default {
             this.modifiedItem = item;
         },
         clearAList() {
-            ShoppingListService.clearList(this.$route.params.id, 18).then(response => {
+            ShoppingListService.clearList(this.$route.params.id).then(response => {
                 if(response.status === 200) {
                     
                     window.location.reload();
@@ -175,9 +186,44 @@ export default {
 
 
 <style>
-table {
-    padding: 100px;
+
+*{
+
+  font-family: Tahoma, Verdana, Segoe, sans-serif;
+
 }
+div#modify-form {
+    padding-bottom: 10px;
+}
+
+tr {
+    color:rgb(59, 55, 42);
+    text-transform: uppercase;   
+}
+td:hover{
+    background-color: rgba(125, 118, 96, 0.6);
+    transition: 0.7s;
+    border-radius: 12px;
+}
+
+th, td {
+    border-bottom: 1.25px solid rgb(59, 55, 42);
+    
+}
+
+
+
+
+table {
+    grid-area: table-grid;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 10px;
+    background:  linear-gradient( 45deg, rgba(132, 117, 76, 0.6), rgba(255, 255, 255));
+    border-radius: 12px;
+    
+}
+
 .board-actions {
   text-align: center;
   padding: 20px 0;
@@ -189,5 +235,76 @@ table {
 }
 .board-actions a:hover {
   text-decoration: underline;
+}
+
+#container {
+    display: grid;
+    padding-top: 75px;
+    grid-template-columns: 1fr 2fr 2fr 1fr;
+    grid-template-areas:". h3 h3 ." 
+                        ". table-grid table-grid ."
+                        ". add-form . . "
+                        ". clear-list . .";
+ 
+}
+
+h3 {
+    color:rgb(59, 55, 42);
+    grid-area: h3;
+}
+
+#add-form {
+    grid-area: add-form;
+}
+
+#clear-list {
+    grid-area:clear-list;
+}
+
+button {
+  width:  auto;
+  min-width:  50px;
+  border-radius:  12px; 
+  text-align:  center;
+  margin-top:10px; 
+  margin-right:5px;
+  padding:  5px 20px;  
+  color:  rgb(80, 80, 80); 
+  background-color: rgba(135, 122, 88, 0.45);
+  font-size:  14px; 
+  box-shadow:  0px 2px 4px -1px rgba(109, 103, 103, 0.712); 
+  border:  none; 
+  
+}
+
+button:active {
+  background-color: rgb(128, 128, 128);
+  border: 4px solid rgb(53, 53, 53);
+  transition: 0.1s;
+  
+}
+
+button:hover {
+  background-color:  rgb(60, 60, 60);
+  color: rgb(217, 217, 217);
+  transition: 0.6s;
+}
+
+input {
+
+  font-size:  16px; 
+  padding:  10px 10px 10px 10px;
+  margin: 10px; 
+  height:  26px; 
+  border:  none; 
+  border-radius: 12px;
+  border-bottom:  solid 1px rgba(0,0,0,.1); 
+  background:  #fff; 
+  width:  auto; 
+  box-sizing:  border-box; 
+  transition:  all .3s linear; 
+  color:  rgb(48, 48, 48); 
+  font-weight:  400;
+  
 }
 </style>

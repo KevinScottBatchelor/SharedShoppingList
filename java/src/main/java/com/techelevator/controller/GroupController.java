@@ -37,6 +37,18 @@ public class GroupController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path="getId/{username}")
+    public int getUserIdByUsername(@PathVariable String username) {
+        return userDao.findIdByUsername(username);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path="getUsername/{userId}")
+    public String getUsernameByUserId(@PathVariable int userId) {
+        return userDao.getUserById(userId).getUsername();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{groupId}", method = RequestMethod.GET)
     public Group getGroupByGroupId(@PathVariable int groupId) {
         return groupDao.getGroupByGroupId(groupId);
@@ -67,6 +79,14 @@ public class GroupController {
         accountId = userDao.findIdByUsername(principal.getName());
 
         return inviteDao.viewMyInvitations(accountId);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(path = "sentInvitation/{accountId}", method = RequestMethod.GET)
+    public List<Invite> viewSentInvitations (@PathVariable int accountId, Principal principal) {
+        accountId = userDao.findIdByUsername(principal.getName());
+
+        return inviteDao.viewSentInvitations(accountId);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -105,6 +125,19 @@ public class GroupController {
 
             groupDao.deleteUserFromGroup(accountId, groupId);
 
+    }
+
+    @RequestMapping(path ="users/{username}")
+    public List<User> findAllUsers(@PathVariable String username, Principal principal) {
+        username = principal.getName();
+
+        return userDao.findAll();
+    }
+
+
+    @RequestMapping(path = "reject/{inviteId}", method = RequestMethod.DELETE)
+    public void rejectInvite(@PathVariable int inviteId) {
+        inviteDao.rejectInvite(inviteId);
     }
 
 }

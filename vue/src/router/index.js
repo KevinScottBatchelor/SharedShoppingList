@@ -62,6 +62,11 @@ const router = new Router({
       component: ShoppingListDetail
     },
     {
+      path: "/list/:id/:groupId",
+      name: 'ShoppingListDetail',
+      component: ShoppingListDetail
+    },
+    {
       path: "/group/:id",
       name: 'Group',
       component: Group

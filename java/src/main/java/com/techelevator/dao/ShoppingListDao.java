@@ -16,8 +16,8 @@ public interface ShoppingListDao {
 
     List<ShoppingList> viewGroupShoppingLists(int groupId);
 
-    void clearListWithoutGroup(int listId, int accountId);
+    void clearListWithoutGroup(int listId);
 
-    void clearListInGroup(int listId, int accountId);
+    void clearListInGroup(int listId);
     void claimShoppingList(int listId, String claimedBy);
 }

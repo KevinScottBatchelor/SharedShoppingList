@@ -44,6 +44,19 @@ public class JdbcInviteDao implements InviteDao{
     }
 
     @Override
+    public List<Invite> viewSentInvitations (int fromUserId) {
+        List<Invite> invites = new ArrayList<>();
+
+        String sql = "SELECT i.*, g.group_name FROM invite_status i " +
+                "JOIN groups g ON g.group_id = i.group_id WHERE from_user = ? AND is_accepted = false; ";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, fromUserId);
+        while(result.next()) {
+            invites.add(mapRowToInvite(result));
+        }
+        return invites;
+    }
+
+    @Override
     public void inviteUserIntoGroup(int invitedUser, int fromUser, int groupId) {
 
         int inviteCode = inviteCodeGenerator();
@@ -69,6 +82,13 @@ public class JdbcInviteDao implements InviteDao{
                 "AND group_id = ? AND invite_code = ?;";
 
         jdbcTemplate.update(changeStatus, invitedUser, fromUser, groupId, inviteCode);
+    }
+
+    @Override
+    public void rejectInvite(int inviteId) {
+        String sql = "DELETE FROM invite_status WHERE invite_id = ?;";
+
+        jdbcTemplate.update(sql, inviteId);
     }
 
     @Override

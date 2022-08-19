@@ -33,9 +33,15 @@ export default {
         return http.get(`groups/invitation/${accountId}`)
     },
 
+
+    viewSentInvitations(accountId) {
+        this.state = store.state;
+        return http.get(`groups/sentInvitation/${accountId}`)
+    },
+
     inviteUserToGroup(invite) {
         this.state = store.state;
-        return http.post(`groups/invitation`, invite)
+        return http.post(`groups/invitation/`, invite)
     },
 
     addUserToGroup(groupId, invite) {
@@ -51,5 +57,25 @@ export default {
     deleteUserFromGroup(accountId, groupId) {
         this.state = store.state;
         return http.delete(`groups/leave/?accountId=${accountId}&groupId=${groupId}`)
+    },
+
+    findAllUsers(username) {
+        this.state = store.state;
+        return http.get(`groups/users/${username}`)
+    },
+
+    getUserIdByUsername(username) {
+        this.state = store.state;
+        return http.get(`groups/getId/${username}`)
+    },
+    rejectInvite(inviteId) {
+        this.state = store.state;
+        return http.delete(`groups/reject/${inviteId}`)
+    },
+
+    getUsernameByUserId(userId) {
+        this.state = store.state;
+        return http.get(`groups/getUsername/${userId}`)
     }
+    
 }

@@ -39,8 +39,8 @@ public class ItemController {
     }
 
     @RequestMapping(path = "{id}")
-    public List<Item> getAllItemsByListId(@PathVariable int id, Principal principal) {
-        return itemDao.listAllItemsByListId(id, principal.getName());
+    public List<Item> getAllItemsByListId(@PathVariable int id) {
+        return itemDao.listAllItemsByListId(id);
 
     }
 

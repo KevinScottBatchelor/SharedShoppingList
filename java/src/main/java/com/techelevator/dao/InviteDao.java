@@ -11,7 +11,9 @@ public interface InviteDao {
     void addUserIntoGroup(int invitedUser, int fromUser, int groupId);
 
     int inviteCodeGenerator();
+    void rejectInvite(int inviteId);
 
+    List<Invite> viewSentInvitations (int fromUserId);
     void updateInviteStatus(int invitedUser, int fromUser, int groupId, String inviteCode);
     List<Invite> viewMyInvitations (int invitedUserId);
     Invite getInvitationById(int inviteId);

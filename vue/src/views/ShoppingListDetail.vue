@@ -12,3 +12,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+div #nav {
+  display: block;
+}
+</style>

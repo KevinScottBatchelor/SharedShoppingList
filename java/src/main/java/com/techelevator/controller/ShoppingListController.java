@@ -73,14 +73,11 @@ public class ShoppingListController {
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "delete", method = RequestMethod.DELETE)
-    public void clearList(@RequestParam int listId,@RequestParam(defaultValue = "0") int groupId, Principal principal) {
-        if(groupId != 0) {
-            shoppingListDao.clearListInGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
-            System.out.println("list is in group and user is a group member");
-        } else {
-            shoppingListDao.clearListWithoutGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
-            System.out.println("list is not in group but user is the list creator");
-        }
+    public void clearList(@RequestParam int listId) {
+
+        shoppingListDao.clearListInGroup(listId);
+
+
     }
 
     @ResponseStatus(HttpStatus.OK)

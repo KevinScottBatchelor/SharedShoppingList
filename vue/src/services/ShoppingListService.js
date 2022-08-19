@@ -13,7 +13,7 @@ export default {
     },
 
     viewAllItemsByListId(listId) {
-        this.state = store.state;
+        
         return http.get(`lists/${listId}`);
     },
 
@@ -38,9 +38,9 @@ export default {
         return http.delete(`lists/delete/${listId}?accountId=${id}`);
     },
 
-    clearList(listId, groupId) {
+    clearList(listId) {
         this.state = store.state;
-        return http.delete(`lists/delete?listId=${listId}&groupId=${groupId}`);
+        return http.delete(`lists/delete?listId=${listId}`);
     },
 
     claimShoppingList(listId,shoppingList) {
