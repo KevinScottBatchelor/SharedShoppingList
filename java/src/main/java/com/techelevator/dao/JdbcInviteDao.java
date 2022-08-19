@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 @Component
@@ -20,12 +22,38 @@ public class JdbcInviteDao implements InviteDao{
     public Invite getInvitationById(int inviteId) {
         Invite invite = new Invite();
 
-        String sql = "SELECT * FROM invite_status WHERE invite_id = ?; ";
+        String sql = "SELECT i.*, g.group_name FROM invite_status i JOIN groups g ON i.group_id = g.group_id WHERE invite_id = ?; ";
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql, inviteId);
         if(result.next()) {
             invite = mapRowToInvite(result);
         }
         return invite;
+    }
+
+    @Override
+    public List<Invite> viewMyInvitations (int invitedUserId) {
+        List<Invite> invites = new ArrayList<>();
+
+        String sql = "SELECT i.*, g.group_name FROM invite_status i " +
+                "JOIN groups g ON g.group_id = i.group_id WHERE invited_user = ? AND is_accepted = false; ";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, invitedUserId);
+        while(result.next()) {
+            invites.add(mapRowToInvite(result));
+        }
+        return invites;
+    }
+
+    @Override
+    public List<Invite> viewSentInvitations (int fromUserId) {
+        List<Invite> invites = new ArrayList<>();
+
+        String sql = "SELECT i.*, g.group_name FROM invite_status i " +
+                "JOIN groups g ON g.group_id = i.group_id WHERE from_user = ? AND is_accepted = false; ";
+        SqlRowSet result = jdbcTemplate.queryForRowSet(sql, fromUserId);
+        while(result.next()) {
+            invites.add(mapRowToInvite(result));
+        }
+        return invites;
     }
 
     @Override
@@ -57,6 +85,13 @@ public class JdbcInviteDao implements InviteDao{
     }
 
     @Override
+    public void rejectInvite(int inviteId) {
+        String sql = "DELETE FROM invite_status WHERE invite_id = ?;";
+
+        jdbcTemplate.update(sql, inviteId);
+    }
+
+    @Override
     public int inviteCodeGenerator() {
         Random rnd = new Random();
         int n = 100000 + rnd.nextInt(900000);
@@ -72,6 +107,7 @@ public class JdbcInviteDao implements InviteDao{
         invite.setInvitedUser(rowSet.getInt("invited_user"));
         invite.setFromUser(rowSet.getInt("from_user"));
         invite.setGroupId(rowSet.getInt("group_id"));
+        invite.setGroupName(rowSet.getString("group_name"));
 
         return invite;
     }

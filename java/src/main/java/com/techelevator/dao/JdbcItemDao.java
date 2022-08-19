@@ -24,8 +24,7 @@ public class JdbcItemDao implements ItemDao{
     public Item getItemByItemId(int itemId) {
         Item item = null;
         String sql = "SELECT i.item_id, i.list_id, i.item_name, i.quantity, i.date_added, i.created_by," +
-                " i.date_modified, i.modified_by, ag.group_id, ag.member_of_group_id FROM items i JOIN lists_in_group lip ON lip.list_id = i.list_id " +
-                "JOIN account_groups ag ON ag.group_id = lip.group_id WHERE i.item_id = ?;";
+                " i.date_modified, i.modified_by FROM items i WHERE i.item_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, itemId);
         if(results.next()) {
             item = mapRowToItem(results);
@@ -34,15 +33,13 @@ public class JdbcItemDao implements ItemDao{
     }
 
     @Override
-    public List<Item> listAllItemsByListId(int listId, String username) {
+    public List<Item> listAllItemsByListId(int listId) {
         List<Item> itemLists = new ArrayList<>();
-        String sql = "SELECT i.item_id, i.list_id, i.item_name, i.quantity, date_added, created_by, date_modified, modified_by" +
-                ", ag.group_id, ag.member_of_group_id " +
-                "FROM items i JOIN lists l ON  l.list_id = i.list_id JOIN accounts a " +
-                "ON a.account_id = l.account_id JOIN users u ON u.user_id = a.user_id " +
-                "JOIN account_groups ag ON ag.member_of_group_id = l.account_id WHERE i.list_id = ? " +
-                "AND i.created_by = ? ORDER BY item_name;";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, listId, username);
+        String sql = "SELECT * " +
+                "FROM items i JOIN lists l ON  l.list_id = i.list_id " +
+                "WHERE i.list_id = ? " +
+                "ORDER BY i.item_name;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, listId);
         while(results.next()) {
             Item itemResult = mapRowToItem(results);
             itemLists.add(itemResult);
@@ -90,8 +87,7 @@ public class JdbcItemDao implements ItemDao{
         if(rowSet.getString("modified_By") != null) {
             item.setModifiedBy(rowSet.getString("modified_By"));
         }
-        item.setGroupId(rowSet.getInt("group_id"));
-        item.setMemberOfGroupId(rowSet.getInt("member_of_group_id"));
+
 
         return item;
     }

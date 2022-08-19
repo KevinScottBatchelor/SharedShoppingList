@@ -14,6 +14,7 @@ public class ShoppingList {
         this.accountId = accountId;
         this.claimedBy = claimedBy;
 
+
     }
 
     public int getListId() {

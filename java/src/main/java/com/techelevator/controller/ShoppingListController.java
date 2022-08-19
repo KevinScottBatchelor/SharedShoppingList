@@ -17,8 +17,9 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@PreAuthorize("isAuthenticated()")
+//@PreAuthorize("isAuthenticated()")
 @RequestMapping(path = "lists/")
+@CrossOrigin
 public class ShoppingListController {
 
     private final ShoppingListDao shoppingListDao;
@@ -31,14 +32,14 @@ public class ShoppingListController {
         this.groupDao = groupDao;
     }
 
-    @RequestMapping(path = "list{listId}")
-    public ShoppingList viewShoppingListByListId(@RequestParam int listId) {
+    @RequestMapping(path = "list/{listId}")
+    public ShoppingList viewShoppingListByListId(@PathVariable int listId) {
 
         return shoppingListDao.viewShoppingListByListId(listId);
     }
 
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
     public void createShoppingList(@RequestBody @Valid ShoppingList shoppingList, Principal principal) {
         int accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
@@ -62,7 +63,7 @@ public class ShoppingListController {
         return newList;
     }
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path ="delete/{listId}", method = RequestMethod.DELETE)
     public void removeShoppingList(@PathVariable int listId, @RequestParam int accountId, Principal principal) {
         accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
@@ -70,19 +71,16 @@ public class ShoppingListController {
     }
 
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "delete", method = RequestMethod.DELETE)
-    public void clearList(@RequestParam int listId, @RequestBody @Valid ShoppingList shoppingList,Principal principal) {
-        if(accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == shoppingList.getAccountId()) {
-            shoppingListDao.clearListWithoutGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
-            System.out.println("list is not in group but user is the list creator");
-        } else {
-            shoppingListDao.clearListInGroup(listId, accountDao.getAccountIdByUsername(principal.getName()).getAccountId());
-            System.out.println("list is in group and user is a group member");
-        }
+    public void clearList(@RequestParam int listId) {
+
+        shoppingListDao.clearListInGroup(listId);
+
+
     }
 
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{listId}/claim", method = RequestMethod.PUT)
     public void claimShoppingList(@PathVariable int listId, @RequestBody @Valid ShoppingList shoppingList, Principal principal) {
 

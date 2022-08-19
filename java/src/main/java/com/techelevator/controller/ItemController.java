@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @PreAuthorize("isAuthenticated()")
 @RequestMapping(path = "lists/")
+@CrossOrigin
 public class ItemController {
 
     private final ItemDao itemDao;
@@ -38,18 +39,18 @@ public class ItemController {
     }
 
     @RequestMapping(path = "{id}")
-    public List<Item> getListByListId(@PathVariable int id, Principal principal) {
-        return itemDao.listAllItemsByListId(id, principal.getName());
+    public List<Item> getAllItemsByListId(@PathVariable int id) {
+        return itemDao.listAllItemsByListId(id);
 
     }
 
-    @ResponseStatus(HttpStatus.GONE)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "deleteItem", method = RequestMethod.DELETE)
     public void removeItemById(@RequestParam int itemId, Principal principal) {
         itemDao.removeItem(itemId);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "createItem", method = RequestMethod.POST)
     public Item createItem(@RequestBody @Valid Item item, Principal principal) {
         item = itemDao.createItem(item, principal.getName());
@@ -59,8 +60,7 @@ public class ItemController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "items/{itemId}", method = RequestMethod.PUT)
     public void updateItem(@RequestBody @Valid Item item, @PathVariable int itemId, Principal principal) {
-        if(item.getCreatedBy().equals(principal.getName()) ||
-                accountDao.getAccountIdByUsername(principal.getName()).getAccountId() == item.getMemberOfGroupId())
+
         itemDao.updateItem(itemId, item.getItemName(), item.getQuantity(), principal.getName());
     }
 }

@@ -37,6 +37,7 @@ export default new Vuex.Store({
       state.token = '';
       state.user = {};
       axios.defaults.headers.common = {};
+      
     }
   }
 })

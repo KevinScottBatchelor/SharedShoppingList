@@ -2,6 +2,7 @@ package com.techelevator.dao;
 
 import com.techelevator.Exception.GroupNotFoundException;
 import com.techelevator.model.Group;
+import com.techelevator.model.ShoppingList;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,14 @@ public class JdbcGroupDao implements GroupDao{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
+    public void createShoppingListInGroup(ShoppingList shoppingList, int accountId, int groupId) {
+        String sql = "INSERT INTO lists(list_name, account_id, claimed_by) VALUES (?,?,?) RETURNING list_id;";
+        int listId = jdbcTemplate.queryForObject(sql,Integer.class, shoppingList.getListName(), accountId, shoppingList.getClaimedBy());
+
+        sql ="INSERT INTO lists_in_group(group_id, list_id) VALUES(?, ?);";
+        jdbcTemplate.update(sql,groupId, listId);
+    }
     @Override
     public List<Group> viewGroupsByUsername(String username) {
         List<Group> groups = new ArrayList<>();
@@ -36,12 +45,12 @@ public class JdbcGroupDao implements GroupDao{
 
     public Group getGroupByGroupId(int groupId) {
         Group group = null;
-        String sql = "SELECT * FROM groups WHERE group_id = ?; ";
+        String sql = "SELECT group_id, group_name FROM groups WHERE group_id = ?; ";
 
         SqlRowSet result = jdbcTemplate.queryForRowSet(sql,groupId);
 
         if(result.next()) {
-            group = mapRowToGroup(result);
+            group = mapRowToGroupId(result);
         } else throw new GroupNotFoundException();
 
         return group;
@@ -73,9 +82,24 @@ public class JdbcGroupDao implements GroupDao{
 
         group.setGroupId(rowSet.getInt("group_id"));
         group.setGroupName(rowSet.getString("group_name"));
+
         group.setJoinedDate(rowSet.getDate("joined_date").toLocalDate());
+
+
         group.setCreator(rowSet.getBoolean("is_creator"));
+
+
+
         group.setMemberOfGroupId(rowSet.getInt("member_of_group_id"));
+
+        return group;
+    }
+
+    private Group mapRowToGroupId(SqlRowSet rowSet) {
+        Group group = new Group();
+
+        group.setGroupId(rowSet.getInt("group_id"));
+        group.setGroupName(rowSet.getString("group_name"));
 
         return group;
     }

@@ -1,12 +1,15 @@
 <template>
-  <div class="home">
-    <h1>Home</h1>
-    <p>You must be authenticated to see this</p>
-  </div>
+    <shopping-list />
 </template>
 
 <script>
+import ShoppingList from '@/components/ShoppingList.vue';
+
+
 export default {
-  name: "home"
+  components: {
+    ShoppingList  
+  },
+  
 };
 </script>

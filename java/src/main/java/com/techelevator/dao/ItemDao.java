@@ -8,7 +8,7 @@ import java.util.List;
 public interface ItemDao {
     Item getItemByItemId(int itemId);
 
-    List<Item> listAllItemsByListId(int listId, String username);
+    List<Item> listAllItemsByListId(int listId);
 
     Item createItem(Item item, String username);
 
