@@ -172,7 +172,8 @@ export default {
     }),
     GroupService.viewSentInvitations(store.state.user.id).then(response => {
       this.sentInvites = response.data;
-      this.isLoading = false;    
+      this.isLoading = false; 
+      this.state = store.state;
       
     })
 
@@ -296,7 +297,8 @@ export default {
           this.InvitedUsername = response.data;
         })
       
-    },
+    }
+    
   
 
 
