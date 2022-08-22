@@ -20,7 +20,7 @@ CREATE TABLE accounts (
 
 CREATE TABLE lists (
         list_id SERIAL,
-        list_name varchar(30) NOT NULL UNIQUE,
+        list_name varchar(25) NOT NULL UNIQUE,
         account_id int NOT NULL,
         claimed_by varchar(50), 
         
@@ -31,12 +31,12 @@ CREATE TABLE lists (
 CREATE TABLE items (
         item_id SERIAL,
         list_id int NOT NULL,
-        item_name varchar(30) NOT NULL,
+        item_name varchar(25) NOT NULL,
         quantity int NOT NULL,
         date_added date NOT NULL,
         created_by varchar(50),
         date_modified date,
-        modified_by varchar(50)
+        modified_by varchar(50),
         
         CONSTRAINT PK_item_id PRIMARY KEY (item_id),
         CONSTRAINT FK_list_id FOREIGN KEY (list_id) REFERENCES lists(list_id)
@@ -45,7 +45,7 @@ CREATE TABLE items (
 
 CREATE TABLE groups (
         group_id SERIAL,
-        group_name varchar(30) NOT NULL UNIQUE,
+        group_name varchar(25) NOT NULL UNIQUE,
             
         CONSTRAINT PK_group_id PRIMARY KEY (group_id)         
 );
@@ -77,7 +77,7 @@ CREATE TABLE invite_status (
         is_accepted boolean DEFAULT false,
         invited_user int,
         from_user int,
-        group_id int
+        group_id int,
         
         CONSTRAINT PK_invite_id PRIMARY KEY (invite_id),
         CONSTRAINT FK_invite_user FOREIGN KEY (invited_user) REFERENCES accounts(account_id)
@@ -87,6 +87,8 @@ CREATE TABLE invite_status (
 
 INSERT INTO users (username,password_hash,role) VALUES ('user','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_USER');
 INSERT INTO users (username,password_hash,role) VALUES ('admin','$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC','ROLE_ADMIN');
+INSERT INTO users (username,password_hash,role) VALUES ('final_capstone_appuser','$2a$10$bja7tGgdx9dTNc3InYSCb.qretLPaHYZQ4dK8rnAYW.vXk9IHtdq6','ROLE_USER');
+INSERT INTO users (username,password_hash,role) VALUES ('final_capstone_owner','$2a$10$FGCMnOlpJjfxz5dT8DOGkOnj4Tyd2m/XC3LZ5v2efSySGEp7jW16m','ROLE_ADMIN');
 
 INSERT INTO accounts(user_id)
 VALUES (1);
@@ -94,50 +96,14 @@ VALUES (1);
 INSERT INTO accounts(user_id)
 VALUES (2);
 
-INSERT INTO lists(list_name, account_id, claimed_by)
-VALUES ('Max''s shopping list', 2, 'admin');
+INSERT INTO accounts(user_id)
+VALUES (3);
 
-INSERT INTO lists(list_name, account_id)
-VALUES ('Jay''s shopping list', 5);
+INSERT INTO accounts(user_id)
+VALUES (4);
 
-INSERT INTO lists(list_name, account_id)
-VALUES ('Kevin''s shopping list', 1);
 
-INSERT INTO items(list_id, item_name, quantity, date_added, created_by)
-VALUES (1, 'Apple', 10, current_date, 'user');
 
-INSERT INTO items(list_id, item_name, quantity, date_added, created_by)
-VALUES (2, 'Peach', 10, current_date, 'admin');
-
-INSERT INTO groups(group_name)
-VALUES ('GROUP 1');
-
-INSERT INTO groups(group_name)
-VALUES ('GROUP 2');
-
-INSERT INTO lists_in_group(group_id, list_id)
-VALUES (1,1);
-
-INSERT INTO lists_in_group(group_id, list_id)
-VALUES (2,2);
-
-INSERT INTO account_groups(group_id, member_of_group_id, joined_date)
-VALUES (1,1, current_date);
-
-INSERT INTO account_groups(group_id, member_of_group_id, joined_date)
-VALUES (2,2, current_date);
-
-INSERT INTO invite_status(invite_code, invited_user)
-VALUES ('j2i39', 2);
-
-INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
-VALUES (1, 'Orange', 10, current_date, 'jay@gmail.com');
-
-INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
-VALUES (1, 'Strawberry', 10, current_date, 'jay@gmail.com');
-
-INSERT INTO items(list_id, item_name, quantity, date_added, created_by) 
-VALUES (1, 'Watermelon', 10, current_date, 'jay@gmail.com');
 
 
 
