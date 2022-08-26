@@ -49,7 +49,6 @@ public class User {
    public void setPassword(String password) {
       this.password = password;
    }
-
    public boolean isActivated() {
       return activated;
    }
@@ -57,7 +56,6 @@ public class User {
    public void setActivated(boolean activated) {
       this.activated = activated;
    }
-
    public Set<Authority> getAuthorities() {
       return authorities;
    }
@@ -65,7 +63,7 @@ public class User {
    public void setAuthorities(Set<Authority> authorities) {
       this.authorities = authorities;
    }
-
+   
    public void setAuthorities(String authorities) {
       String[] roles = authorities.split(",");
       for(String role : roles) {
