@@ -22,10 +22,8 @@ public class ItemController {
 
     private final ItemDao itemDao;
     private final AccountDao accountDao;
-
     private final UserDao userDao;
     private final ShoppingListDao shoppingListDao;
-
     public ItemController(ItemDao itemDao, AccountDao accountDao, ShoppingListDao shoppingListDao, UserDao userDao) {
         this.itemDao = itemDao;
         this.accountDao = accountDao;

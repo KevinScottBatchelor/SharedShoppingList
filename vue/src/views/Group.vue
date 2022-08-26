@@ -3,12 +3,11 @@
 </template>
 
 <script>
-import GroupDetail from '@/components/GroupDetail';
-
+import GroupDetail from "@/components/GroupDetail";
 
 export default {
   components: {
-    GroupDetail 
+    GroupDetail
   }
 };
 </script>

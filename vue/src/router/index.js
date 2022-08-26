@@ -59,21 +59,27 @@ const router = new Router({
     {
       path: "/list/:id",
       name: 'ShoppingListDetail',
-      component: ShoppingListDetail
+      component: ShoppingListDetail,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/list/:id/:groupId",
       name: 'ShoppingListDetail',
-      component: ShoppingListDetail
+      component: ShoppingListDetail,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/group/:id",
       name: 'Group',
-      component: Group
+      component: Group,
+      meta: {
+        requiresAuth: true
+      }
     },
-
-
- 
   ]
 })
 

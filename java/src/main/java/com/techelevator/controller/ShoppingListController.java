@@ -38,7 +38,6 @@ public class ShoppingListController {
         return shoppingListDao.viewShoppingListByListId(listId);
     }
 
-
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
     public void createShoppingList(@RequestBody @Valid ShoppingList shoppingList, Principal principal) {
@@ -48,7 +47,9 @@ public class ShoppingListController {
 
     @RequestMapping(path = "account/mylists")
     public List<ShoppingList> viewShoppingListsByAccountId(Principal principal) {
+
         int accountId;
+
         accountId = accountDao.getAccountIdByUsername(principal.getName()).getAccountId();
 
         return shoppingListDao.viewShoppingListsByAccountId(accountId);
@@ -70,20 +71,17 @@ public class ShoppingListController {
         shoppingListDao.removeShoppingList(listId, accountId);
     }
 
-
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "delete", method = RequestMethod.DELETE)
     public void clearList(@RequestParam int listId) {
 
         shoppingListDao.clearListInGroup(listId);
 
-
     }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "{listId}/claim", method = RequestMethod.PUT)
     public void claimShoppingList(@PathVariable int listId, @RequestBody @Valid ShoppingList shoppingList, Principal principal) {
-
 
         if(shoppingList.getClaimedBy()!= null && shoppingList.getClaimedBy().equals(principal.getName())) {
             shoppingListDao.claimShoppingList(listId, null);

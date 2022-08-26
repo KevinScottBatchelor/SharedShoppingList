@@ -133,7 +133,7 @@ export default {
       if (this.user.password != this.user.confirmPassword) {
 
         this.registrationErrors = true;
-        this.registrationErrorMsg = 'Password & Confirm Password do not match.';
+        this.registrationErrorMsg = 'Passwords do not match.';
     
       } else if(!this.user.valid_email) {
         this.registrationErrors = true;
