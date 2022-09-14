@@ -282,8 +282,6 @@ export default {
 };
 </script>
 
-
-
 <style scoped>
 * {
   font-family: Tahoma, Verdana, Segoe, sans-serif;
