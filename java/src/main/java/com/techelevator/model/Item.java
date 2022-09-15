@@ -1,7 +1,6 @@
 package com.techelevator.model;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Item {
 

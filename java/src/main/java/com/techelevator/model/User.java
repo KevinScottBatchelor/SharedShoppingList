@@ -49,7 +49,6 @@ public class User {
    public void setPassword(String password) {
       this.password = password;
    }
-
    public boolean isActivated() {
       return activated;
    }
@@ -57,7 +56,6 @@ public class User {
    public void setActivated(boolean activated) {
       this.activated = activated;
    }
-
    public Set<Authority> getAuthorities() {
       return authorities;
    }
@@ -101,11 +99,3 @@ public class User {
               '}';
    }
 }
-
-//
-//{
-//        "username": "jay",
-//        "password": "jay",
-//        "confirmPassword": "jay",
-//        "role": "ROLE_admin"
-//        }

@@ -70,7 +70,6 @@ public class JdbcShoppingListDao implements ShoppingListDao{
         jdbcTemplate.update(sql, claimedBy, listId);
     }
 
-
     //UPDATE LIST NAME
 
     @Override
@@ -111,7 +110,6 @@ public class JdbcShoppingListDao implements ShoppingListDao{
 
         jdbcTemplate.update(sql,listId);
     }
-
 
     private ShoppingList mapRowToShoppingList(SqlRowSet rowSet) {
         ShoppingList shoppingList = new ShoppingList();
